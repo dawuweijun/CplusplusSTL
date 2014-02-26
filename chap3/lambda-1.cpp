@@ -16,7 +16,7 @@ int main()
 
 	int id = 0;
 	auto f = [id] () mutable {
-						std::cout << "id: " << std::endl;
+						std::cout << "id: " << id << std::endl;
 						++id;
 	};
 	id = 42;

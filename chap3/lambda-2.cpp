@@ -10,7 +10,7 @@ std::function<int(int, int)> returnLambda ()
 
 int main()
 {
-	autolf = returnLambda();
+	auto lf = returnLambda();
 	std::cout << lf(6, 7) << std::endl;
 	return 0;
 }
