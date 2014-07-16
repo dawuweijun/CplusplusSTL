@@ -18,7 +18,5 @@ int main()
     }
 
     for_each(coll.cbegin(), coll.cend(), print);
-
     cout << endl;
-
 }
