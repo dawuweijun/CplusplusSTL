@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cmath>
 
 bool isPrime(int n)
 {
