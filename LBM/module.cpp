@@ -5,12 +5,12 @@
 #include <iostream>
 
 Module::Module()
-//       :name_("D3Q19")
-       :number_of_direction_(19)
-       ,weight_(19)
-       ,xVelocity_(19)
-       ,yVelocity_(19)
-       ,zVelocity_(19)
+       :name_("D3Q19")
+       ,number_of_direction_(19)
+       ,weight_(std::vector<double>(19))
+       ,xVelocity_(std::vector<double>(19))
+       ,yVelocity_(std::vector<double>(19))
+       ,zVelocity_(std::vector<double>(19))
 {
    const double w0 = 1.0 / 3.0;
    const double w1 = 1.0 / 36.0;
@@ -33,54 +33,28 @@ Module::Module()
         weight_[i] = w[i];
      }
 }
-Module::~Module()
-{}
 
-int
-Module::numDirection() const
+Module::~Module()
 {
-    return number_of_direction_;
-}
-/*
-std::string& Module::name() const
-{
-    return name_;
-}
-*/
-std::vector<double> Module::xVelocity() const 
-{
-    return xVelocity_;
-}
-std::vector<double> Module::yVelocity() const 
-{
-    return yVelocity_;
-}
-std::vector<double> Module::zVelocity() const 
-{
-    return zVelocity_;
-}
-std::vector<double> Module::weight() const 
-{
-    return weight_;
 }
 
 void print (const std::string s, std::vector<double>& vec) 
 {
     std::cout << s << std::endl;
     for (auto elem : vec) {
-        std::cout << elem << " " << std::endl;
+        std::cout << elem << " "; 
     }
+    std::cout << std::endl;
 }
 int main()
 {
     Module module;
     const int num = module.numDirection();
-    std::cout << "direction size: " << num<< std::endl;
-//    std::cout << module.name() << std::endl;
-    std::vector<double> xvel = module.xVelocity();
-    std::vector<double> yvel = module.yVelocity();
-    std::vector<double> zvel = module.zVelocity();
-    std::vector<double> w = module.weight();
+    std::cout << "Module's name is: " << module.name() << ". It has " << num<< " directions." << std::endl;
+    std::vector<double>& xvel = module.xVelocity();
+    std::vector<double>& yvel = module.yVelocity();
+    std::vector<double>& zvel = module.zVelocity();
+    std::vector<double>& w = module.weight();
     print("xvel", xvel); 
     print("yvel", yvel); 
     print("zvel", zvel); 

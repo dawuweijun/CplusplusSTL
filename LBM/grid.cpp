@@ -3,7 +3,7 @@
 #include <set>
 #include "grid.hpp"
 
-Grid::Grid(double NX, double NY, double NZ)
+Grid::Grid(int NX, int NY, int NZ)
      :NX_(NX)
      ,NY_(NY)
      ,NZ_(NZ)
@@ -15,12 +15,13 @@ Grid::Grid(double NX, double NY, double NZ)
 Grid::~Grid()
 {}
 
-double
+int
 Grid::dimension() const
 {
     return NX_ * NY_ * NZ_;
 }
-double
+
+int
 Grid::spaceDim() const
 {
     if (NZ_ == 1)
@@ -28,8 +29,9 @@ Grid::spaceDim() const
     else
         return 3;
 }
-double 
-Grid::index(double x, double y, double z) const
+
+int 
+Grid::index(const int x, const int y, const int z) const
 {
     return NZ_ * NY_ * z +  NY_ * y + x;
 }
@@ -65,10 +67,10 @@ std::vector<int> Grid::boundary()
             idx.push_back(index(0, y, 0));
             idx.push_back(index(NX_-1, y, 0));
    }*/
-   for (auto elem : idx) {
-        std::cout << elem << " ";
-    }
-    std::cout <<"boundary" <<std::endl;
+//   for (auto elem : idx) {
+//        std::cout << elem << " ";
+//    }
+//    std::cout <<"\nboundary:\n" <<std::endl;
     for (int i = 0; i < idx.size(); ++i) {
         boundary_[idx[i]] = 1;
     }
@@ -77,7 +79,7 @@ std::vector<int> Grid::boundary()
 
 int main () {
     Grid grid(3,3,3);
-    std::cout << "total dimension: " << grid.dimension() << std::endl;
+    std::cout << "total dimension: " << grid.dimension() << " with NX:" << grid.NX() << " NY: " << grid.NY()<< " NZ: "<<grid.NZ()<< std::endl;
     std::cout << "spaceDime(): " << grid.spaceDim() << std::endl;
     std::cout << "boundary:\n";
     std::vector<int> bd;
@@ -86,4 +88,5 @@ int main () {
         std::cout << i << "  ";
     }
     std::cout << std::endl;
+    
 }
