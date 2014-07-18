@@ -46,7 +46,44 @@ void
 Lattice::propagationBySwap(const Grid& grid, Fluid& fluid)
 {
     //swap locally
-    for (int i = 0; i <: )
+    for (int i = 0; i < fluid.distribution().size(); ++i) {
+        for (int k = 0; k < fluid.distribution()[i].size()-1;) {
+            std::swap(fluid.distribution()[i][k], fluid.distribution()[i][k+1]);
+            k = k + 2;
+        }
+    }
+    const int NX = grid.NX();
+    const int NY = grid.NY();
+    const int NZ = grid.NZ();
+    //swap between neigbours
+    for(int z = 0; z < NZ; ++z) {
+		double ztop = (z >= NZ-1 ? z+1-NZ : z+1);
+	    double zbot = (z <= 0 ? z-1+NZ : z-1);
+        for(int y = 0; y < NY; ++y) {
+	        double ytop = (y >= NY-1 ? y+1-NY : y+1);
+        	double ybot = (y <= 0 ? y-1+NY : y-1);
+            for(x = 0; x < NX; ++x) {
+	            xtop = (x >= NX-1 ? x+1-NX : x+1);
+            	xbot = (x <= 0 ? x-1+NX : x-1);
+                int idx1 = grid.index(x, y, z);
+                int idx2 = grid.index(xbot, y, z);
+                std::swap(fluid.distribution[idx1][0], fluid.distribution[idx2][1]);
+                idx2 = grid.index(x, ybot, z);
+                std::swap(fluid.distribution[idx1][2], fluid.distribution[idx2][3]);
+                idx2 = grid.index(x, y, zbot);
+                std::swap(fluid.distribution[idx1][4], fluid.distribution[idx2][5]);
+                idx2 = grid.index(xbot, ybot, z);
+                std::swap(fluid.distribution[idx1][6], fluid.distribution[idx2][7]);
+                std::swap(fluid.distribution[idx1][8], fluid.distribution[idx2][9]);
+                idx2 = grid.index(xbot, y, zbot);
+                std::swap(fluid.distribution[idx1][10], fluid.distribution[idx2][11]);
+                std::swap(fluid.distribution[idx1][12], fluid.distribution[idx2][13]);
+                idx2 = grid.index(x, ybot, zbot);
+                std::swap(fluid.distribution[idx1][14], fluid.distribution[idx2][15]);
+                std::swap(fluid.distribution[idx1][16], fluid.distribution[idx2][17]);
+	        }
+        }
+    }
 }
 void
 Lattice::collision(const Grid& grid, const std::vector<Fluid>& fluid)
