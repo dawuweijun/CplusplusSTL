@@ -1,3 +1,0 @@
-PERMZ
---LAYER 1
---ROW   1

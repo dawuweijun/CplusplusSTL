@@ -1,4 +1,0 @@
-deck_filename=simple.data
-linsolver=istl
-threephase_model=simple
-output_dir=output

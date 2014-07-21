@@ -1,4 +1,0 @@
-deck_filename=spe1a-1.data
-linsolver=istl
-threephase_model=simple
-output_dir=output_spe1
