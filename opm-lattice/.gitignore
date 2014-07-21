@@ -13,6 +13,4 @@
 *.a
 
 build/
-data/spe9/output_spe9
-data/*.out
 
