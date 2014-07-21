@@ -1,3 +1,3 @@
-opm-sample
+opm-lattice
 ========
-Lattice Boltzman method for solving pore scale simulation. 
+Lattice Boltzman method for pore scale simulation. 
