@@ -11,12 +11,10 @@ class Module;
 class Fluid;
 class Lattice {
 public:
-    Lattice(const Grid& grid, const Module& module, const std::vector<Fluid>& fluid);
+    Lattice(const Grid& grid, const Module& module, const Fluid& red, const Fluid& blue);
     ~Lattice();
-//    void massMomentumCalc(const std::vector<Fluid>& fluid, const Grid& grid);
-//    void pressureCalc(const std::vector<Fluid>& fluid, const Grid& grid);
-    void collision(const Grid& grid, const std::vector<Fluid>& fluid);
-    void streamingSwap(const Grid& grid, const std::vector<Fluid>& fluid);
+    void 
+    step(const Grid& grid, Fluid& red, Fluid& blue);
 private:
     double externalForce_;
     double fluxForce_;
@@ -25,8 +23,13 @@ private:
     std::vector<double> gfs_;
     Grid& grid_;
     Module& module_;
-    std::vector<Fluid>& fluid_;
+    Fluid& red_;
+    Fluid& blue_;
     void potential();
     void propagationBySwap(const Grid& grid, Fluid& fluid);
+    void collision(const Grid& grid, Fluid& red, Fluid& blue);
+    void streamingSwap(const Grid& grid, Fluid& red, Fluid& blue);
+    void massMomentumCalc(const std::vector<Fluid>& fluid, const Grid& grid);
+    void pressureCalc(const std::vector<Fluid>& fluid, const Grid& grid);
 }
 #endif //LATTICE_HEADER_INCLUDED

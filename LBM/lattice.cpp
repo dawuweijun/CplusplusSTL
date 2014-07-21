@@ -1,14 +1,15 @@
 #include "lattice.hpp"
 #include <vector>
-Lattice::Lattice(const Grid& grid, const Module& module, const std::vector<Fluid>& fluid)
-        :externalForce_(fluid[0].tau()*(grid.spaceDim()+1)*4/(module.numDirection()-1))
+Lattice::Lattice(const Grid& grid, const Module& module, const Fluid& red, const Fluid& blue)
+        :externalForce_(red.tau()*(grid.spaceDim()+1)*4/(module.numDirection()-1))
         ,fluxForce_(0.0)
         ,flux_(0.0)
         ,gff_(std::vector<double>(module.numDirection()))
         ,gfs_(std::vector<double>(module.numDirection()))
         ,grid_(grid)
         ,module_(module)
-        ,fluid_(fluid)
+        ,red_(red)
+        ,blue_(blue)
 {
 
 }
@@ -43,18 +44,18 @@ Lattice::potential()
 }
 
 void
-Lattice::propagationBySwap(const Grid& grid, Fluid& fluid)
+Lattice::propagationBySwap(std::vector<std::vector<double>>& dis)
 {
     //swap locally
-    for (int i = 0; i < fluid.distribution().size(); ++i) {
-        for (int k = 0; k < fluid.distribution()[i].size()-1;) {
-            std::swap(fluid.distribution()[i][k], fluid.distribution()[i][k+1]);
+    for (int i = 0; i < dis.size(); ++i) {
+        for (int k = 0; k < dis[i].size()-1;) {
+            std::swap(dis[i][k], dis[i][k+1]);
             k = k + 2;
         }
     }
-    const int NX = grid.NX();
-    const int NY = grid.NY();
-    const int NZ = grid.NZ();
+    const int NX = grid_.NX();
+    const int NY = grid_.NY();
+    const int NZ = grid_.NZ();
     //swap between neigbours
     for(int z = 0; z < NZ; ++z) {
 		double ztop = (z >= NZ-1 ? z+1-NZ : z+1);
@@ -65,34 +66,217 @@ Lattice::propagationBySwap(const Grid& grid, Fluid& fluid)
             for(x = 0; x < NX; ++x) {
 	            xtop = (x >= NX-1 ? x+1-NX : x+1);
             	xbot = (x <= 0 ? x-1+NX : x-1);
-                int idx1 = grid.index(x, y, z);
-                int idx2 = grid.index(xbot, y, z);
-                std::swap(fluid.distribution[idx1][0], fluid.distribution[idx2][1]);
+                int idx1 = grid_.index(x, y, z);
+                int idx2 = grid_.index(xbot, y, z);
+                std::swap(dis[idx1][0], dis[idx2][1]);
                 idx2 = grid.index(x, ybot, z);
-                std::swap(fluid.distribution[idx1][2], fluid.distribution[idx2][3]);
+                std::swap(dis[idx1][2], dis[idx2][3]);
                 idx2 = grid.index(x, y, zbot);
-                std::swap(fluid.distribution[idx1][4], fluid.distribution[idx2][5]);
+                std::swap(dis[idx1][4], dis[idx2][5]);
                 idx2 = grid.index(xbot, ybot, z);
-                std::swap(fluid.distribution[idx1][6], fluid.distribution[idx2][7]);
-                std::swap(fluid.distribution[idx1][8], fluid.distribution[idx2][9]);
+                std::swap(dis[idx1][6], dis[idx2][7]);
+                std::swap(dis[idx1][8], dis[idx2][9]);
                 idx2 = grid.index(xbot, y, zbot);
-                std::swap(fluid.distribution[idx1][10], fluid.distribution[idx2][11]);
-                std::swap(fluid.distribution[idx1][12], fluid.distribution[idx2][13]);
+                std::swap(dis[idx1][10], dis[idx2][11]);
+                std::swap(dis[idx1][12], dis[idx2][13]);
                 idx2 = grid.index(x, ybot, zbot);
-                std::swap(fluid.distribution[idx1][14], fluid.distribution[idx2][15]);
-                std::swap(fluid.distribution[idx1][16], fluid.distribution[idx2][17]);
+                std::swap(dis[idx1][14], dis[idx2][15]);
+                std::swap(dis[idx1][16], dis[idx2][17]);
 	        }
         }
     }
 }
 void
-Lattice::collision(const Grid& grid, const std::vector<Fluid>& fluid)
+Lattice::collisionStepScBlue(std::vector<std::vector<double>>& RedDist, std::vector<std::vector<double>>& BlueDist)
 {
-
+    const int n = grid_.dimension();
+    const int nv = module_.numDirection();
+    double RedDensity = 0, BlueDensity = 0;
+    std::vector<double> velocity(grid_.spaceDim());
+    std::vector<std::vector<double>> f;
+    std::vector<int>& solid = grid_.boundary();
+    const std::vector<double>& cx = module_.xVelocity();
+    const std::vector<double>& cy = module_.yVelocity();
+    const std::vector<double>& cz = module_.zVelocity();
+    const std::vector<double>& w = module_.weight();
+    for (int i = 0; i < n; ++i) {
+        if (solid[i] == 0) {
+            for (int k = 0; k < nv; ++k) {
+                RedDensity += RedDist[i][k];
+                BlueDensity += BlueDist[i][k];
+            }
+            for (int k = 0; k < nv; ++k) {
+                f[i][k] = RedDensity;
+            }
+        } else if (solid[i] == 1) {
+            for (int k = 0; k < nv; ++k) {
+                f[i][k] = -10.0;
+            }
+        }
+    }
+    propagationBySwap(f);
+    fcalcSc(f);
+    //
+    //Bounce-back
+    //
+    std::vector<double> RedAfter(nv);
+    std::vector<double> BlueAfter(nv);
+    for (int i = 0; i < n; ++i) {
+        if (solid[i] == 1) {
+            for (int k = 0; k < nv-1; ++k) {
+                if (k%2 == 0) {
+                    BlueAfter[k] = BlueDist[i][k+1];
+                } else {
+                    BlueAfter[k] = BlueDist[i][k-1];
+                }
+            }
+            for (int k = 0; k < nv-1; ++k) {
+                BlueDist[i][k] = BlueAfter[k];
+            }
+        } else if (solid[i] == 0) {
+            RedDensity = BlueDensity=0;
+            for (int k = 0; k < nv; ++k) {
+                RedDensity += RedDist[i][k];
+                BlueDensity += BlueDist[i][k];
+                velocity[0] += (RedDist[i][k] + BlueDist[i][k]) * cx[k] 
+                               - (1.0 / blue_.lambda()) * (std::fabs(RedDist[i][k] * fluxForce_ * cx[k]));
+                velocity[1] += (RedDist[i][k] + BlueDist[i][k]) * cy[k];
+                velocity[2] += (RedDist[i][k] + BlueDist[i][k]) * cz[k];
+            }
+            //add Sc potential to momentum.
+            for (int k = 0; k < 3; ++k) {
+                velocity[k] += -(1.0 / blue_.lambda()) * BlueDensity * f[i][k];
+            }
+            for (int k = 0; k < nv; ++k) {
+                BlueDist[i][k] += blue_.lambda()*(BlueDist[i][k] - NipSC(0, RedDensity, BlueDensity, cx[k], cy[k], cz[k], w[k], velocity));
+            }
+        }
+    }
 }
 
 void
-Lattice::streamingSwap(const Grid& grid, const std::vector<Fluid>& fluid)
+Lattice::collisionStepScRed(std::vector<std::vector<double>>& RedDist, std::vector<std::vector<double>>& BlueDist)
 {
+    const int n = grid_.dimension();
+    const int nv = module_.numDirection();
+    double RedDensity = 0, BlueDensity = 0;
+    std::vector<double> velocity(grid_.spaceDim());
+    std::vector<std::vector<double>> f;
+    std::vector<int>& solid = grid_.boundary();
+    const std::vector<double>& cx = module_.xVelocity();
+    const std::vector<double>& cy = module_.yVelocity();
+    const std::vector<double>& cz = module_.zVelocity();
+    const std::vector<double>& w = module_.weight();
+    for (int i = 0; i < n; ++i) {
+        if (solid[i] == 0) {
+            for (int k = 0; k < nv; ++k) {
+                RedDensity += RedDist[i][k];
+                BlueDensity += BlueDist[i][k];
+            }
+            for (int k = 0; k < nv; ++k) {
+                f[i][k] = RedDensity;
+            }
+        } else if (solid[i] == 1) {
+            for (int k = 0; k < nv; ++k) {
+                f[i][k] = -10.0;
+            }
+        }
+    }
+    propagationBySwap(f);
+    fcalcSc(f);
+    //
+    //Bounce-back
+    //
+    std::vector<double> RedAfter(nv);
+    std::vector<double> BlueAfter(nv);
+    for (int i = 0; i < n; ++i) {
+        if (solid[i] == 1) {
+            for (int k = 0; k < nv-1; ++k) {
+                if (k%2 == 0) {
+                    RedAfter[k] = RedDist[i][k+1];
+                } else {
+                    RedAfter[k] = RedDist[i][k-1];
+                }
+            }
+            for (int k = 0; k < nv-1; ++k) {
+                RedDist[i][k] = RedAfter[k];
+            }
+        } else if (solid[i] == 0) {
+            RedDensity = BlueDensity=0;
+            for (int k = 0; k < nv; ++k) {
+                RedDensity += RedDist[i][k];
+                BlueDensity += BlueDist[i][k];
+                velocity[0] += (RedDist[i][k] + BlueDist[i][k]) * cx[k] 
+                               - (1.0 / red_.lambda()) * (std::fabs(RedDist[i][k] * fluxForce_ * cx[k]));
+                velocity[1] += (RedDist[i][k] + BlueDist[i][k]) * cy[k];
+                velocity[2] += (RedDist[i][k] + BlueDist[i][k]) * cz[k];
+            }
+            //add Sc potential to momentum.
+            for (int k = 0; k < 3; ++k) {
+                velocity[k] += -(1.0 / red_.lambda()) * RedDensity * f[i][k];
+            }
+            for (int k = 0; k < nv; ++k) {
+                BlueDist[i][k] += red_.lambda()*(RedDist[i][k] - NipSC(1, RedDensity, BlueDensity, cx[k], cy[k], cz[k], w[k], velocity));
+            }
+        }
+    }
+}
 
+double
+NipSc(const int flag, const double Rden, const double Bden, const double cxk, const double cyk, const double czk, const double wk, const std::vector<double> velocity)
+{
+    double Nip = 0, rho = 0, uc = 0, u2 = 0;
+    rho = Rden + Bden;
+    if (rho <= 0.0) {
+        rho = 0;
+    } else {
+        for (int i = 0; i < velocity.size(); ++i) {
+            velocity[i] /= rho;
+        }
+    }
+    uc = velocity[0] * cxk + velocity[1] * cyk + velocity[2] * czk;
+    for (int i = 0; i < velocity.size(); ++i) {
+        u2 += std::pow(velocity[i], 2);
+    }
+    if (flag == 0) {
+        Nip = Bden * wk * (1 + 3 * uc + 4.5 * uc * uc - 1.5 * u2); 
+    }
+    if (flag == 1) {
+        Nip = Rden * wk * (1 + 3 * uc + 4.5 * uc * uc - 1.5 * u2); 
+    }
+    return Nip;
+}
+void
+Lattice::fcalcSc(std::vector<std::vector<double>>& f)
+{
+    double fx = 0, fy = 0, fz = 0;
+    const int n = grid_.dimension();
+    const int nv = module_.numDirection();
+    const std::vector<double>& cx = module_.xVelocity();
+    const std::vector<double>& cy = module_.yVelocity();
+    const std::vector<double>& cz = module_.zVelocity();
+    for (int i = 0; i < n; ++i) {
+        for (int k = 0; k < nv; ++k) {
+            if (f[i][k] > 0.0) {
+                fx += gff_[k] * cx[k] * f[i][l];
+                fy += gff_[k] * cy[k] * f[i][l];
+                fz += gff_[k] * cz[k] * f[i][l];
+            } else if (f[i][k] < -9.9) {
+                fx += gfs_[k] * cx[k];
+                fy += gfs_[k] * cy[k];
+                fz += gfs_[k] * cz[k];
+                
+            }
+        }
+        f[i][0] = -fx;
+        f[i][1] = -fy;
+        f[i][2] = -fz;
+    }
+}
+void
+Lattice::streamingSwap(std::vector<std::vector<double>>& RedDist, std::vector<std::vector<double>>& BlueDist)
+{
+    propagationBySwap(RedDist);
+    propagationBySwap(BlueDist);
+    
 }

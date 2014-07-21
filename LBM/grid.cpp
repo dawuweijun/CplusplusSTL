@@ -35,7 +35,7 @@ Grid::index(const int x, const int y, const int z) const
 {
     return NZ_ * NY_ * z +  NY_ * y + x;
 }
-std::vector<int> Grid::boundary()
+std::vector<int>& Grid::boundary()
 {
     std::vector<int> idx;
     //compute innner index.

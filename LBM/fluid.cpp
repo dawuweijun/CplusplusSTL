@@ -2,7 +2,7 @@
 #include <vector>
 
 
-Fluid::Fluid(const Grid& grid, cosnt Module& module, const double rho, const double tau, const double mu, const double velmax)
+Fluid::Fluid(const Grid& grid, const Module& module, const double rho, const double tau, const double mu, const double velmax)
       :rho_(rho)
       ,tau_(tau)
       ,mu_(mu)
