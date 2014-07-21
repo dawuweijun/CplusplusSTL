@@ -1,0 +1,4 @@
+/deck_filename=simple.data
+/linsolver=istl
+/output_dir=output
+/threephase_model=simple

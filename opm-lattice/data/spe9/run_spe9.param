@@ -1,0 +1,8 @@
+deck_filename=spe9.data
+linsolver=istl
+linsolver_verbosity=1
+linsolver_max_iterations=100
+linsolver_type=1
+threephase_model=stone2
+output=true
+output_dir=output_spe9

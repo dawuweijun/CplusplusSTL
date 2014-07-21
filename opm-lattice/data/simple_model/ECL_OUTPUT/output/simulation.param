@@ -1,0 +1,3 @@
+/deck_filename=SIMPLE.DATA
+/linsolver=istl
+/threephase_model=stone2

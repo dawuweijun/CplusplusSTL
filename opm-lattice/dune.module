@@ -1,0 +1,6 @@
+Module: opm-sample
+Description: Test Cases For OPM
+Version: 1.0
+Label: 2013.08
+Maintainer: miliu@statoil.com
+Depends: opm-core
