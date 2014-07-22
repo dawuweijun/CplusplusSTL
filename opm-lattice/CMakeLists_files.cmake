@@ -35,7 +35,7 @@ list (APPEND MAIN_SOURCE_FILES
 # originally generated with the command:
 # find tests -name '*.cpp' -a ! -wholename '*/not-unit/*' -printf '\t%p\n' | sort
 list (APPEND TEST_SOURCE_FILES
-	examples/simulator.cpp
+	examples/sim_lbm.cpp
 	)
 
 # originally generated with the command:
@@ -46,13 +46,13 @@ list (APPEND TEST_DATA_FILES
 # originally generated with the command:
 # find examples -name '*.c*' -printf '\t%p\n' | sort
 list (APPEND EXAMPLE_SOURCE_FILES
-	examples/simulator.cpp
+	examples/sim_lbm.cpp
 	)
 
 # programs listed here will not only be compiled, but also marked for
 # installation
 list (APPEND PROGRAM_SOURCE_FILES
-	examples/simulator.cpp
+	examples/sim_lbm.cpp
 	)
 
 # originally generated with the command:

@@ -1,6 +1,8 @@
 #!/bin/bash
 # Download and build source code on RH5
 
+rm -rf build/
+
 	if [-d "build"]; then
 		rm -rf build/
 		else

@@ -2,10 +2,10 @@
 # vim: set filetype=cmake autoindent tabstop=2 shiftwidth=2 noexpandtab softtabstop=2 nowrap:
 
 # key information about the library
-set (project "opm-sample")
+set (project "opm-lattice")
 set (${project}_NAME "${project}")
-set (${project}_DESCRIPTION "OPM Module for testing cases")
-set (${project}_DIR "sample")
+set (${project}_DESCRIPTION "OPM Module for Lattice Boltzman method")
+set (${project}_DIR "lattice")
 set (${project}_VERSION_MAJOR 1)
 set (${project}_VERSION_MINOR 0)
 set (doxy_dir "doc/doxygen")
