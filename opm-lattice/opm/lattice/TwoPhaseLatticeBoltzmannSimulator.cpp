@@ -15,7 +15,7 @@ TwoPhaseLatticeBoltzmannSimulator(const GridManager& grid,
     , red_(red)
     , blue_(blue)
     , module_(module)
-    , lattice_(grid_, module_, red_, blue_)
+    , solver_(grid_, module_, red_, blue_)
 {
     output_ = true;
     if (output_) {

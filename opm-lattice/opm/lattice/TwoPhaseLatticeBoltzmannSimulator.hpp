@@ -4,7 +4,7 @@
 #include <opm/lattice/FluidProperties.hpp>
 #include <opm/lattice/GridManager.hpp>
 #include <opm/lattice/LatticeBoltzmannModule.hpp>
-#include <opm/lattice/LatticeBoltzmannMethod.hpp>
+#include <opm/lattice/LatticeBoltzmannSolver.hpp>
 #include <opm/lattice/SimulatorState.hpp>
 #include <opm/lattice/writeVtkData.hpp>
 #include <opm/lattice/DataMap.hpp>
@@ -30,7 +30,7 @@ private:
     const FluidProperties& red_;
     const FluidProperties& blue_;
     const LatticeBoltzmannModule& module_;
-    const LatticeBoltzmannMethod lattice_;
+    const LatticeBoltzmannSolver solver_;
 
     void outputStateVtk(const GridManager& grid,
                         const SimulatorState& state,
