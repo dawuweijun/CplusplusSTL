@@ -1,9 +1,10 @@
 #ifndef LATTICEBOLTZMANNMETHOD_HEADER_INCLUDED
 #define LATTICEBOLTZMANNMETHOD_HEADER_INCLUDED
 
-#include <opm/lattice/grid.hpp>
-#include <opm/lattice/module.hpp>
-#include <opm/lattice/fluid.hpp>
+#include <opm/lattice/GridManager.hpp>
+#include <opm/lattice/LatticeBoltzmannModule.hpp>
+#include <opm/lattice/FluidProperties.hpp>
+#include <opm/lattice/SimulatorState.hpp>
 #include <vector>
 
 class LatticeBoltzmannMethod {
@@ -31,7 +32,5 @@ private:
     void collisionStepScRed(std::vector<std::vector<double>>& RedDist, std::vector<std::vector<double>>& BlueDist);
     void
     streamingSwap(std::vector<std::vector<double>>& RedDist, std::vector<std::vector<double>>& BlueDist);
-    void massMomentumCalc(const std::vec, const GridManager& grid);
-    void pressureCalc(const std::vector<FluidProperties>& fluid, const GridManager& grid);
 };
 #endif //LATTICE_HEADER_INCLUDED

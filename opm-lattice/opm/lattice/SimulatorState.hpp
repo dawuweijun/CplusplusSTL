@@ -9,10 +9,10 @@ public:
     int numPhases() const { return num_phases_; }
     std::vector<double>& pressure() { return press_; }
     std::vector<double>& velocity() { return vel_; }
-    std::vector<std::vector<double>>& distribution { return distr_; }
+    std::vector<std::vector<double>>& distribution() { return distr_; }
     const std::vector<double>& pressure() const { return press_; }
     const std::vector<double>& velocity() const { return vel_; }
-    const std::vector<std::vector<double>>& distribution const { return distr_; }
+    const std::vector<std::vector<double>>& distribution() const { return distr_; }
 private:
     int num_phases_;
     std::vector<double> press_;

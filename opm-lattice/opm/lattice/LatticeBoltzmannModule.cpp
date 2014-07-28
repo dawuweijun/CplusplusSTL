@@ -1,4 +1,4 @@
-#include <opm/lattice/module.hpp>
+#include <opm/lattice/LatticeBoltzmannModule.hpp>
 #include <string>
 #include <cmath>
 #include <vector>

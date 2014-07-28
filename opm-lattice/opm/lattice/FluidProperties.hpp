@@ -4,8 +4,8 @@
 author: Ming Liu
 email:  qilicun@outlook.com
 */
-#include <opm/lattice/grid.hpp>
-#include <opm/lattice/module.hpp>
+#include <opm/lattice/GridManager.hpp>
+#include <opm/lattice/LatticeBoltzmannModule.hpp>
 #include <vector>
 //class GridManager;
 //class LatticeBoltzmannModule;

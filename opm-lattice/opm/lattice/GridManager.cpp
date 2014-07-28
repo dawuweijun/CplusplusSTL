@@ -1,7 +1,7 @@
 #include <vector>
 #include <iostream>
 #include <set>
-#include <opm/lattice/grid.hpp>
+#include <opm/lattice/GridManager.hpp>
 
 GridManager::GridManager(int NX, int NY, int NZ)
      :NX_(NX)

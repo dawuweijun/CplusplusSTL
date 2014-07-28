@@ -1,4 +1,4 @@
-#include <opm/lattice/lattice.hpp>
+#include <opm/lattice/LatticeBoltzmannMethod.hpp>
 #include <vector>
 LatticeBoltzmannMethod::LatticeBoltzmannMethod(const GridManager& grid, const LatticeBoltzmannModule& module, const FluidProperties& red, const FluidProperties& blue)
         :externalForce_(red.tau()*(grid.spaceDim()+1)*4/(module.numDirection()-1))

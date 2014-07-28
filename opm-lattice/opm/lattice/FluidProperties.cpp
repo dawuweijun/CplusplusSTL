@@ -1,4 +1,4 @@
-#include <opm/lattice/fluid.hpp>
+#include <opm/lattice/FluidProperties.hpp>
 #include <vector>
 
 

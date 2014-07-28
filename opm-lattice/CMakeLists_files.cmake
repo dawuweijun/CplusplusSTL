@@ -26,16 +26,16 @@
 # originally generated with the command:
 # find opm -name '*.c*' -printf '\t%p\n' | sort
 list (APPEND MAIN_SOURCE_FILES
-	opm/lattice/grid.cpp
-	opm/lattice/module.cpp
-	opm/lattice/fluid.cpp
-	opm/lattice/lattice.cpp
+	opm/lattice/GridManager.cpp
+	opm/lattice/LatticeBoltzmannModule.cpp
+	opm/lattice/FluidProperties.cpp
+	opm/lattice/LatticeBoltzmannMethod.cpp
+	opm/lattice/writeVtkData.cpp
 	)
 
 # originally generated with the command:
 # find tests -name '*.cpp' -a ! -wholename '*/not-unit/*' -printf '\t%p\n' | sort
 list (APPEND TEST_SOURCE_FILES
-	examples/sim_lbm.cpp
 	)
 
 # originally generated with the command:
@@ -58,8 +58,12 @@ list (APPEND PROGRAM_SOURCE_FILES
 # originally generated with the command:
 # find opm -name '*.h*' -a ! -name '*-pch.hpp' -printf '\t%p\n' | sort
 list (APPEND PUBLIC_HEADER_FILES
-	opm/lattice/grid.hpp
-	opm/lattice/module.hpp
-	opm/lattice/fluid.hpp
-	opm/lattice/lattice.hpp
+	opm/lattice/GridManager.hpp
+	opm/lattice/LatticeBoltzmannModule.hpp
+	opm/lattice/FluidProperties.hpp
+	opm/lattice/LatticeBoltzmannMethod.hpp
+	opm/lattice/writeVtkData.hpp
+	opm/lattice/DataMap.hpp
+	opm/lattice/SimulatorState.hpp
+	opm/lattice/SimulatorState_iml.hpp
 	)
