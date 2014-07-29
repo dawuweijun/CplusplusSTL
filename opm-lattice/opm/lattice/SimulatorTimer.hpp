@@ -3,8 +3,6 @@
 
 #include <iosfwd>
 #include <vector>
-#include <boost/date_time/gregorian/gregorian.hpp>
-#include <boost/date_time/posix_time/posix_time_types.hpp>
 
 class SimulatorTimer
 {
@@ -40,16 +38,11 @@ public:
     /// it is an error to call stepLengthTaken().
     double stepLengthTaken () const;
 
-    /// Time elapsed since the start of the POSIX epoch (Jan 1st,
-    /// 1970) until the current time step begins [s].
-    time_t currentPosixTime() const;
 
     /// Time elapsed since the start of the simulation until the
     /// beginning of the current time step [s].
     double simulationTimeElapsed() const;
 
-    /// Return the current time as a posix time object.
-    boost::posix_time::ptime currentDateTime() const;
 
     /// Total time.
     double totalTime() const;
@@ -75,7 +68,6 @@ private:
     int current_step_;
     double current_time_;
     double total_time_;
-    boost::gregorian::date start_date_;
 };
 
 #endif // OPM_SIMULATORTIMER_HEADER_INCLUDED

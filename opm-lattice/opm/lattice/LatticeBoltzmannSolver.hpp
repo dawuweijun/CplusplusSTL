@@ -12,10 +12,10 @@ public:
     LatticeBoltzmannSolver(const GridManager& grid, const LatticeBoltzmannModule& module, const FluidProperties& red, const FluidProperties& blue);
     ~LatticeBoltzmannSolver();
     void 
-    step(const double dt, SimulatorState& state);
+    step(const double dt, SimulatorState& x);
 private:
     struct SolutionState {
-        SolutionState(const int np);
+        SolutionState(const int size);
         std::vector<double> red;
         std::vector<double> blue;
     };
@@ -29,26 +29,28 @@ private:
     const FluidProperties& red_;
     const FluidProperties& blue_;
     SolutionState
-    initVariables(const SimulatorState& state);
+    initVariables();
     void
-    updateState(SimulatorState& state, const SolutionState& x);
+    initDistribution(const double rho, const double x1, const double x2, const int loc, std::vector<double>& dist);
+    void
+    updateState(const SolutionState& state, SimulatorState& x);
     void 
     potential();
     void 
-    propagationBySwap(SolutionState& x);
+    propagationBySwap(std::vector<double>& dist);
     void 
-    fcalcSc(SolutionState& x);
+    fcalcSc(std::vector<double>& f);
     double
     NipSc(const int flag, const double Rden, const double Bden, const double cxk, const double cyk, const double czk, const double wk, std::vector<double>& velocity);
     void 
-    collisionStepScBlue(SolutionState& x);
+    collisionStepScBlue(SolutionState& state);
     void 
-    collisionStepScRed(SolutionState& x);
+    collisionStepScRed(SolutionState& state);
     void
-    streamingSwap(SolutionState& x);
+    streamingSwap(SolutionState& state);
     void
-    massMomentumCalc(const SolutionState& x, SimulatorState& state);
+    massMomentumCalc(const SolutionState& state, SimulatorState& x);
     void
-    pressureCalc(const SolutionState& x, SimulatorState& state);
+    pressureCalc(const SolutionState& state, SimulatorState& x);
 };
 #endif //LATTICEBOLTZMANNSOLVER_HEADER_INCLUDED

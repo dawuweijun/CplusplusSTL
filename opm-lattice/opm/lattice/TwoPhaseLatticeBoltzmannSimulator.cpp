@@ -29,7 +29,7 @@ TwoPhaseLatticeBoltzmannSimulator(const GridManager& grid,
             std::cout << "Creating directories failed: " << fpath << std::endl;
             exit(1);
         }
-        output_interval_ = 10;
+        output_interval_ = 100;
     }
 }
 

@@ -106,10 +106,11 @@ void writeVtkData(const GridManager& grid,
         for (DataMap::const_iterator dit = data.begin(); dit != data.end(); ++dit) {
             pm["Name"] = dit->first;
             const std::vector<double>& field = *(dit->second);
-            pm["NumberOfComponents"] = 1;//boost::lexical_cast<std::string>(num_comps);
+            const int num_comps = field.size() / num_pts;
+            pm["NumberOfComponents"] = boost::lexical_cast<std::string>(num_comps);
             Tag ptag("DataArray", pm, os);
-            const int num_per_line = 5;// num_comps == 1 ? 5 : num_comps;
-            for (int item = 0; item < num_pts; ++item) {
+            const int num_per_line =  num_comps == 1 ? 5 : num_comps;
+            for (int item = 0; item < num_pts*num_comps; ++item) {
                 if (item % num_per_line == 0) {
                     Tag::indent(os);
                 }

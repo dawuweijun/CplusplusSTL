@@ -1,12 +1,12 @@
 #include <opm/lattice/SimulatorTimer.hpp>
 #include <ostream>
 #include <numeric>
+#include <cassert>
 
 /// Default constructor.
 SimulatorTimer::SimulatorTimer()
     : current_step_(0),
-      current_time_(0.0),
-      start_date_(2012,1,1)    // A really arbitrary default starting value?!
+      current_time_(0.0)
 {
 }
 
@@ -61,17 +61,6 @@ double SimulatorTimer::simulationTimeElapsed() const
     return current_time_;
 }
 
-/// time elapsed since the start of the POSIX epoch (Jan 1st, 1970) [s].
-time_t SimulatorTimer::currentPosixTime() const
-{
-    tm t = boost::posix_time::to_tm(currentDateTime());
-    return std::mktime(&t);
-}
-
-boost::posix_time::ptime SimulatorTimer::currentDateTime() const
-{
-    return boost::posix_time::ptime(start_date_) + boost::posix_time::seconds( (int) current_time_ );
-}
 
 
 
