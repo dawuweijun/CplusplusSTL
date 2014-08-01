@@ -1,7 +1,7 @@
 #ifndef STOPWATCH_HEADER_INCLUDED
 #define STOPWATCH_HEADER_INCLUDED
 
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <chrono>
 
 class StopWatch
 {
@@ -29,9 +29,9 @@ private:
     enum StopWatchState { UnStarted, Running, Stopped };
 
     StopWatchState state_;
-    boost::posix_time::ptime start_time_;
-    boost::posix_time::ptime last_time_;
-    boost::posix_time::ptime stop_time_;
+    std::chrono::steady_clock::time_point start_time_;
+    std::chrono::steady_clock::time_point last_time_;
+    std::chrono::steady_clock::time_point stop_time_;
 };
 
 #endif // OPM_STOPWATCH_HEADER

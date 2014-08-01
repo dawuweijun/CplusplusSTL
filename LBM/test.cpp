@@ -25,14 +25,19 @@ int main()
     int index = NZ*NY*z + NY*y + x;
     std::cout << "("<< x << "," << y <<"," << z << ")" << "are: " << vec[index] << std::endl;
 //    v.push_back({1.,2.,3.,4.});
-    for (auto elem : v) {
-        std::cout << elem;
-    }
     std::vector<int> t;
     for (int i = 0; i < 5; ++i) {
         t.push_back(++i);
     }
-    std::for_each(t.begin(), t.end(), std::pow());
     for (auto i : t)
     std::cout << i << std::endl;
+    std::cout << "Test two arrays\n"; 
+    std::vector<std::vector<double>> twoarrays;
+    twoarrays.resize(2, std::vector<double>(3, 10));
+    std::cout << twoarrays.size() << std::endl;
+    for (auto elen : twoarrays) {
+        for (auto k : elen) {
+            std::cout << k << std::endl;
+        }
+    }
 }
