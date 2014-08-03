@@ -18,9 +18,6 @@ LatticeBoltzmannSolver::LatticeBoltzmannSolver(const GridManager& grid, const La
 }
 
 
-LatticeBoltzmannSolver::~LatticeBoltzmannSolver()
-{
-}
 
 LatticeBoltzmannSolver::SolutionState::SolutionState(const int size)
     : red (std::vector<double>(size, 0))

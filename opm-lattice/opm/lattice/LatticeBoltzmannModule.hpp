@@ -8,7 +8,6 @@
 class LatticeBoltzmannModule{
 public:
     LatticeBoltzmannModule();
-    ~LatticeBoltzmannModule();
 #if 0
     void init()
     {

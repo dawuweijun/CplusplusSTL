@@ -10,7 +10,6 @@
 class LatticeBoltzmannSolver {
 public:
     LatticeBoltzmannSolver(const GridManager& grid, const LatticeBoltzmannModule& module, const FluidProperties& red, const FluidProperties& blue);
-    ~LatticeBoltzmannSolver();
     void 
     step(const double dt, SimulatorState& x);
 private:

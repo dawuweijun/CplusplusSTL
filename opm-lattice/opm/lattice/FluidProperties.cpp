@@ -14,7 +14,4 @@ FluidProperties::FluidProperties(const GridManager& grid, const LatticeBoltzmann
 {
 }
 
-FluidProperties::~FluidProperties()
-{
-}
 

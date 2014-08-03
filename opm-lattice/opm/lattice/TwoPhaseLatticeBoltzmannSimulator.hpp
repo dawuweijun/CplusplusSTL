@@ -8,6 +8,7 @@
 #include <opm/lattice/SimulatorState.hpp>
 #include <opm/lattice/writeVtkData.hpp>
 #include <opm/lattice/DataMap.hpp>
+#include <opm/lattice/SimulatorTimer.hpp>
 #include <boost/filesystem.hpp>
 #include <opm/lattice/StopWatch.hpp>
 #include <iostream>
@@ -16,7 +17,8 @@ class TwoPhaseLatticeBoltzmannSimulator
 {
 public:
     TwoPhaseLatticeBoltzmannSimulator(const GridManager& grid,
-                                      const FluidProperties& fluid,
+                                      const FluidProperties& red,
+                                      const FluidProperties& blue,
                                       const LatticeBoltzmannModule& module);
     void
     run(SimulatorTimer& timer,
@@ -30,7 +32,7 @@ private:
     const FluidProperties& red_;
     const FluidProperties& blue_;
     const LatticeBoltzmannModule& module_;
-    const LatticeBoltzmannSolver solver_;
+    LatticeBoltzmannSolver solver_;
 
     void outputStateVtk(const GridManager& grid,
                         const SimulatorState& state,
@@ -40,5 +42,5 @@ private:
                            const SimulatorState& state,
                            const int step,
                            const std::string& output_dir);
-}
+};
 #endif //TWOPHASELATTICEBOLTZMANNSIMULATOR_HEADER_INCLUDED

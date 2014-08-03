@@ -4,6 +4,8 @@
 #include <numeric>
 #include <fstream>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 
 TwoPhaseLatticeBoltzmannSimulator::
@@ -68,13 +70,13 @@ TwoPhaseLatticeBoltzmannSimulator::
 outputStateMatlab(const GridManager& grid,
                   const SimulatorState& state,
                   const int step,
-                  const std::string& output_dir);
+                  const std::string& output_dir)
 {
-    Opm::DataMap dm;
-    dm["density"] = &state.density();
+    DataMap dm;
+    dm["density"] = &state.velocity();
     dm["pressure"] = &state.pressure();
     // Write data (not grid) in Matlab format
-    for (Opm::DataMap::const_iterator it = dm.begin(); it != dm.end(); ++it) {
+    for (DataMap::const_iterator it = dm.begin(); it != dm.end(); ++it) {
         std::ostringstream fname;
         fname << output_dir << "/" << it->first;
         boost::filesystem::path fpath = fname.str();
@@ -88,7 +90,7 @@ outputStateMatlab(const GridManager& grid,
         fname << "/" << std::setw(6) << std::setfill('0') << step << ".txt";
         std::ofstream file(fname.str().c_str());
         if (!file) {
-            std::cout << "Failed to open " << vtkfilename.str() << std::endl;
+            std::cout << "Failed to open " << fname.str() << std::endl;
             exit(1);
         }
         file.precision(15);
@@ -105,14 +107,14 @@ run(SimulatorTimer& timer, SimulatorState& state)
     StopWatch solver_timer;
     double stime = 0.0;
     StopWatch step_timer; 
-    StopWatch totle_timer;
-    total_time.start();
+    StopWatch total_timer;
+    total_timer.start();
     std::fstream tstep_os;
     if (output_) {
         std::string filename = output_dir_ + "/step_timing.txt";
         tstep_os.open(filename.c_str(), std::fstream::out | std::fstream::app);
     }
-    while (!timer.done) {
+    while (!timer.done()) {
         step_timer.start();
         timer.report(std::cout);
         if (output_ && (timer.currentStepNum() % output_interval_ == 0)) {
@@ -123,13 +125,13 @@ run(SimulatorTimer& timer, SimulatorState& state)
         }
         solver_timer.start();
         solver_.step(timer.currentStepLength(), state);
-        solver_time.stop();
+        solver_timer.stop();
         const double st = solver_timer.secsSinceStart();
         std::cout << "Lattice Boltzmann Simulator took: " << st << " seconds." << std::endl;
         stime += st;
         ++timer;
     }
-    total_time.stop();
-    std::cout << "Total time taken: " << total_timer.secsSinceStart();
+    total_timer.stop();
+    std::cout << "Total time taken: " << total_timer.secsSinceStart()
               << "\n Solver Time taken: " << stime;
 }

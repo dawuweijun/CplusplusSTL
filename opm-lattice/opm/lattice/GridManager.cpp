@@ -3,7 +3,7 @@
 #include <set>
 #include <opm/lattice/GridManager.hpp>
 
-GridManager::GridManager(int NX, int NY, int NZ)
+GridManager::GridManager(const int NX, const int NY, const int NZ)
      :NX_(NX)
      ,NY_(NY)
      ,NZ_(NZ)
@@ -11,9 +11,6 @@ GridManager::GridManager(int NX, int NY, int NZ)
 {
     std::cout << "GridManager was successfully created!\n";
 }
-
-GridManager::~GridManager()
-{}
 
 int
 GridManager::dimension() const

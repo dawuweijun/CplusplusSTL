@@ -8,9 +8,8 @@ email:  qilicun@outlook.com
 
 class GridManager{
 public:
-    GridManager(int NX, int NY, int NZ);
-    GridManager(int NX, int NY);
-    ~GridManager();
+    GridManager(const int NX, const int NY, const int NZ);
+    GridManager(const int NX, const int NY);
     int dimension() const;
     int spaceDim() const;
     int index(const int x, const int y, const int z) const;
@@ -21,9 +20,9 @@ public:
     const int NZ() const { return NZ_; }
      
 private:
-    int NX_;
-    int NY_;
-    int NZ_;
+    const int NX_;
+    const int NY_;
+    const int NZ_;
     std::vector<int> boundary_;
     void setBoundary();
 };

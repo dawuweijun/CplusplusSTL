@@ -12,7 +12,6 @@ email:  qilicun@outlook.com
 class FluidProperties{
 public:
     FluidProperties(const GridManager& gird, const LatticeBoltzmannModule& module, const double, const double, const double, const double);
-    ~FluidProperties();
 //    void init(const double x1, const double x2, const int loc, std::vector<double>& dist);
     double rho() const;
     double tau() const;

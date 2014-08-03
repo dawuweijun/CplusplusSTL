@@ -34,9 +34,6 @@ LatticeBoltzmannModule::LatticeBoltzmannModule()
      }
 }
 
-LatticeBoltzmannModule::~LatticeBoltzmannModule()
-{
-}
 
 void print (const std::string s, std::vector<double>& vec) 
 {
