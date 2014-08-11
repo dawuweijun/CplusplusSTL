@@ -1,26 +1,26 @@
-# - Find OPM polymer library
+# - Find OPM lattice library
 #
 # Defines the following variables:
-#   opm-polymer_INCLUDE_DIRS    Directory of header files
-#   opm-polymer_LIBRARIES       Directory of shared object files
-#   opm-polymer_DEFINITIONS     Defines that must be set to compile
-#   opm-polymer_CONFIG_VARS     List of defines that should be in config.h
-#   HAVE_OPM_POLYMER            Binary value to use in config.h
+#   opm-lattice_INCLUDE_DIRS    Directory of header files
+#   opm-lattice_LIBRARIES       Directory of shared object files
+#   opm-lattice_DEFINITIONS     Defines that must be set to compile
+#   opm-lattice_CONFIG_VARS     List of defines that should be in config.h
+#   HAVE_OPM_LATTICE            Binary value to use in config.h
 
 # Copyright (C) 2013 Uni Research AS
 # This code is licensed under The GNU General Public License v3.0
 
+include (opm-lattice-prereqs)
 include (OpmPackage)
 find_opm_package (
   # module name
   "opm-lattice"
 
   # dependencies
-  "ERT;
-  opm-core REQUIRED
-  "
+  "${opm-lattice_DEPS}"
+
   # header to search for
-  "opm/lattice/LatticeBoltzmannMethod.hpp"
+  "opm/lattice/DataMap.hpp"
 
   # library to search for
   "opmlattice"
@@ -29,12 +29,14 @@ find_opm_package (
   ""
 
   # test program
-"#include <opm/polymer/PolymerState.hpp>
+"#include <opm/lattice/PolymerState.hpp>
 int main (void) {
-  Opm::PolymerState s;
+  DataMap s;
   return 0;
 }
 "
   # config variables
-  "HAVE_ERT")
+  "${opm-lattice_CONFIG_VAR}"
+  )
 
+#debug_find_vars ("opm-lattice")

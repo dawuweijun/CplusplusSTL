@@ -9,7 +9,6 @@
 #include <opm/lattice/writeVtkData.hpp>
 #include <opm/lattice/DataMap.hpp>
 #include <opm/lattice/SimulatorTimer.hpp>
-#include <boost/filesystem.hpp>
 #include <opm/lattice/StopWatch.hpp>
 #include <iostream>
 #include <string>

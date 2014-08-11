@@ -43,6 +43,7 @@ void print (const std::string s, std::vector<double>& vec)
     }
     std::cout << std::endl;
 }
+/*
 int main()
 {
     LatticeBoltzmannModule module;
@@ -57,3 +58,4 @@ int main()
     print("zvel", zvel); 
     print("weight",w); 
 }
+*/

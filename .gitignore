@@ -1,3 +1,4 @@
 *.out
 *.swp
 chap3/*.out
+opm-lattice/build

@@ -9,4 +9,4 @@ rm -rf build/
 		    mkdir build
 		fi
     cd build
-	cmake -DCMAKE_C_COMPILER="gcc48" -DCMAKE_CXX_COMPILER="gcc48" -DDUNE_ROOT="/project/res/x86_64_RH_5/share/opm/dune" -DSUPERLU_ROOT="/project/res/x86_64_RH_5/share/opm/SuperLU_4.0" -DBOOST_ROOT="/project/res/x86_64_RH_5/share/opm/boost" -DERT_ROOT="/project/res/x86_64_RH_5/share/ert/release/nightly/upstream/master" ../
+	cmake -DCMAKE_C_COMPILER="gcc48" -DCMAKE_CXX_COMPILER="g++48" -DSUPERLU_ROOT="/project/res/x86_64_RH_5/share/opm/SuperLU_4.0" -DBOOST_ROOT="/project/res/x86_64_RH_5/share/opm/boost" ../

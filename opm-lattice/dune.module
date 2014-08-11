@@ -1,6 +1,6 @@
-Module: opm-sample
-Description: Test Cases For OPM
-Version: 1.0
-Label: 2013.08
-Maintainer: miliu@statoil.com
+Module: opm-lattice
+Description: OPM module for lbm simulations
+Version: 1.0.1
+Label: 2013.10
+Maintainer: atgeirr@sintef.no
 Depends: opm-core
