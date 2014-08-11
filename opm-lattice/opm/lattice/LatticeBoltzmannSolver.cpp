@@ -1,4 +1,7 @@
 #include <opm/lattice/LatticeBoltzmannSolver.hpp>
+#include <opm/lattice/FluidProperties.hpp>
+#include <opm/lattice/GridManager.hpp>
+#include <opm/lattice/LatticeBoltzmannModule.hpp>
 #include <iostream>
 #include <cassert>
 #include <vector>

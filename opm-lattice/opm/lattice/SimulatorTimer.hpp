@@ -70,4 +70,4 @@ private:
     double total_time_;
 };
 
-#endif // OPM_SIMULATORTIMER_HEADER_INCLUDED
+#endif // SIMULATORTIMER_HEADER_INCLUDED

@@ -1,6 +1,9 @@
 #ifndef SIMULATOR_STATE_HEADER_INCLUDED
 #define SIMULATOR_STATE_HEADER_INCLUDED
 #include <vector>
+class GridManager;
+class LatticeBoltzmannModule;
+
 class SimulatorState
 {
 public:
