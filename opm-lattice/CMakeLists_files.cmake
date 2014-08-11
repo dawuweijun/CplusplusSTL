@@ -29,8 +29,12 @@ list (APPEND MAIN_SOURCE_FILES
 	opm/lattice/GridManager.cpp
 	opm/lattice/LatticeBoltzmannModule.cpp
 	opm/lattice/FluidProperties.cpp
-	opm/lattice/LatticeBoltzmannMethod.cpp
+	opm/lattice/LatticeBoltzmannSolver.cpp
+	opm/lattice/TwoPhaseLatticeBoltzmannSimulator.cpp
 	opm/lattice/writeVtkData.cpp
+	opm/lattice/StopWatch.cpp
+	opm/lattice/SimulatorState.cpp
+	opm/lattice/SimulatorTimer.cpp
 	)
 
 # originally generated with the command:
@@ -63,9 +67,11 @@ list (APPEND PUBLIC_HEADER_FILES
 	opm/lattice/GridManager.hpp
 	opm/lattice/LatticeBoltzmannModule.hpp
 	opm/lattice/FluidProperties.hpp
-	opm/lattice/LatticeBoltzmannMethod.hpp
+	opm/lattice/LatticeBoltzmannSolver.hpp
+	opm/lattice/TwoPhaseLatticeBoltzmannSimulator.hpp
 	opm/lattice/writeVtkData.hpp
 	opm/lattice/DataMap.hpp
+	opm/lattice/StopWatch.hpp
 	opm/lattice/SimulatorState.hpp
-	opm/lattice/SimulatorState_iml.hpp
+	opm/lattice/SimulatorTimer.hpp
 	)
