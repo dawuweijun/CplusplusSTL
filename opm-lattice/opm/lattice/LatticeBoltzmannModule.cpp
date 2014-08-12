@@ -26,7 +26,7 @@ LatticeBoltzmannModule::LatticeBoltzmannModule()
     const double w[19] = {w2, w2, w2, w2, w2, w2,                          // Sublattice 1
 			    w1, w1, w1, w1, w1, w1, w1, w1, w1, w1, w1, w1,  // Sublattice 2
 			    w0};                                             // Sublattice 0 (rest particle)
-     for (int i = 0; i < static_cast<int>(xVelocity_.size()); ++i) {
+     for (auto i = 0; i < xVelocity_.size(); ++i) {
         xVelocity_[i] = c_x[i];
         yVelocity_[i] = c_y[i];
         zVelocity_[i] = c_z[i];

@@ -1,6 +1,5 @@
 #ifndef LATTICEBOLTZMANNSOLVER_HEADER_INCLUDED
 #define LATTICEBOLTZMANNSOLVER_HEADER_INCLUDED
-
 #include <opm/lattice/GridManager.hpp>
 #include <opm/lattice/LatticeBoltzmannModule.hpp>
 #include <opm/lattice/FluidProperties.hpp>

@@ -25,20 +25,21 @@ LatticeBoltzmannSolver::LatticeBoltzmannSolver(const GridManager& grid, const La
 LatticeBoltzmannSolver::SolutionState::SolutionState(const int size)
     : red (std::vector<double>(size, 0))
     , blue(std::vector<double>(size, 0))
-{
-}
+{}
+
 void
 LatticeBoltzmannSolver::step(const double dt, SimulatorState& x)
 {
     const int size = grid_.dimension()*module_.numDirection();
+    std::cout << "total size: "  << size << std::endl;   
     SolutionState state(size); 
     state = initVariables();
     collisionStepScRed(state);
     collisionStepScBlue(state);
     streamingSwap(state);
-    if (static_cast<int> (dt) % 100 == 0) {
+//    if (static_cast<int> (dt) % 10 == 0) {
         massMomentumCalc(state, x);
-    }
+//    }
 }
 
 void
@@ -419,12 +420,13 @@ LatticeBoltzmannSolver::massMomentumCalc(const SolutionState& state, SimulatorSt
 
         }
     }
-    std::cout << "\n Mass Momentum \n";
-    std::cout << std::setw(18) << std::setprecision(9) << "Total Mass : " << mass[0] + mass[1] << std::endl;
-    std::cout << std::setw(18) << std::setprecision(9) << "Red   Mass : " << mass[0] << std::endl;
-    std::cout << std::setw(18) << std::setprecision(9) << "Blue  Mass : " << mass[1] << std::endl;
-    std::cout << std::setw(18) << std::setprecision(9) << "FluxForce  : " << fluxForce_ << std::endl;
-    std::cout << std::setw(18) << std::setprecision(9) << "Max abs vel " << maxabsvelocity << "(" << velocity[0] << ", " << velocity[1] << ", " << velocity[2] << ")" << std::endl;
+    std::cout << "\n    Mass Momentum \n";
+    std::cout << std::setw(18) << std::setprecision(9) << "     Total Mass   : " << mass[0] + mass[1] << std::endl;
+    std::cout << std::setw(18) << std::setprecision(9) << "     Red   Mass   : " << mass[0] << std::endl;
+    std::cout << std::setw(18) << std::setprecision(9) << "     Blue  Mass   : " << mass[1] << std::endl;
+    std::cout << std::setw(18) << std::setprecision(9) << "     FluxForce    : " << fluxForce_ << std::endl;
+    std::cout << std::setw(18) << std::setprecision(9) << "     ExternalForce: " << externalForce_ << std::endl;
+    std::cout << std::setw(18) << std::setprecision(9) << "     Max abs vel " << maxabsvelocity << "(" << velocity[0] << ", " << velocity[1] << ", " << velocity[2] << ")" << std::endl;
    
     // update density.
     x.velocity().resize(N*2);
