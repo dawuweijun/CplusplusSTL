@@ -1,37 +1,71 @@
-#ifndef STOPWATCH_HEADER_INCLUDED
-#define STOPWATCH_HEADER_INCLUDED
+//===========================================================================
+//
+// File: StopWatch.hpp
+//
+// Created: Thu Jul  2 23:04:17 2009
+//
+// Author(s): Atgeirr F Rasmussen <atgeirr@sintef.no>
+//
+// $Date$
+//
+// $Revision$
+//
+//===========================================================================
 
-#include <chrono>
+/*
+  Copyright 2009, 2010 SINTEF ICT, Applied Mathematics.
+  Copyright 2009, 2010 Statoil ASA.
 
-class StopWatch
-{
-public:
-    /// Default constructor. Before the StopWatch is start()-ed,
-    /// it is an error to call anything other than start().
-    StopWatch();
+  This file is part of the Open Porous Media project (OPM).
 
-    /// Starts the StopWatch. It is always legal to call
-    /// start(), even if not stop()-ped.
-    void start();
-    /// Stops the StopWatch. The watch no longer runs, until
-    /// restarted by a call to start().
-    void stop();
+  OPM is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    /// \return the number of running seconds that have passed
-    /// since last call to start(), secsSinceLast() or
-    /// secsSinceStart()
-    double secsSinceLast();
-    /// \return the number of running seconds that have passed
-    /// since last call to start().
-    double secsSinceStart();
+  OPM is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-private:
-    enum StopWatchState { UnStarted, Running, Stopped };
+  You should have received a copy of the GNU General Public License
+  along with OPM.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
-    StopWatchState state_;
-    std::chrono::steady_clock::time_point start_time_;
-    std::chrono::steady_clock::time_point last_time_;
-    std::chrono::steady_clock::time_point stop_time_;
-};
+#ifndef STOPWATCH_INCLUDED_HEADER
+#define STOPWATCH_INCLUDED_HEADER
+
+#include <boost/date_time/posix_time/posix_time.hpp>
+
+	class StopWatch
+	{
+	public:
+	    /// Default constructor. Before the StopWatch is start()-ed,
+	    /// it is an error to call anything other than start().
+	    StopWatch();
+
+	    /// Starts the StopWatch. It is always legal to call
+	    /// start(), even if not stop()-ped.
+	    void start();
+	    /// Stops the StopWatch. The watch no longer runs, until
+	    /// restarted by a call to start().
+	    void stop();
+
+	    /// \return the number of running seconds that have passed
+	    /// since last call to start(), secsSinceLast() or
+	    /// secsSinceStart()
+	    double secsSinceLast();
+	    /// \return the number of running seconds that have passed
+	    /// since last call to start().
+	    double secsSinceStart();
+
+	private:
+	    enum StopWatchState { UnStarted, Running, Stopped };
+
+	    StopWatchState state_;
+	    boost::posix_time::ptime start_time_;
+	    boost::posix_time::ptime last_time_;
+	    boost::posix_time::ptime stop_time_;
+	};
 
 #endif // OPM_STOPWATCH_HEADER
