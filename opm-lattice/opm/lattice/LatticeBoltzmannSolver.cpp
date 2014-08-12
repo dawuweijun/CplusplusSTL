@@ -1,12 +1,16 @@
 #include <opm/lattice/LatticeBoltzmannSolver.hpp>
+#include <opm/lattice/LatticeBoltzmannSolverOutput.hpp>
 #include <opm/lattice/FluidProperties.hpp>
 #include <opm/lattice/GridManager.hpp>
 #include <opm/lattice/LatticeBoltzmannModule.hpp>
+
 #include <iostream>
+#include <cmath>
 #include <cassert>
 #include <vector>
 #include <numeric>
 #include <iomanip>
+#include <algorithm>
 LatticeBoltzmannSolver::LatticeBoltzmannSolver(const GridManager& grid, const LatticeBoltzmannModule& module, const FluidProperties& red, const FluidProperties& blue)
         :externalForce_(red.tau()*(grid.spaceDim()+1)*4/(module.numDirection()-1))
         ,fluxForce_(0.0)
@@ -34,11 +38,32 @@ LatticeBoltzmannSolver::step(const double dt, SimulatorState& x)
     std::cout << "total size: "  << size << std::endl;   
     SolutionState state(size); 
     state = initVariables();
+    // test initial state.
+    // update density.
+    const int ND = module_.numDirection();
+    const int N = grid_.dimension();
+    const std::vector<int>& boundary = grid_.boundary();
+    x.velocity().resize(N*2);
+    for (int i = 0; i < N; ++i) {
+        double tmp =0, tmp2=0;
+        for (int k = 0; k < ND; ++k) {
+            tmp += state.red[i*ND + k];
+            tmp2 += state.blue[i*ND + k];
+        }
+        x.velocity()[i*2] = tmp / (red_.rho() + 1.0);
+        x.velocity()[i*2 + 1] = tmp2 / (blue_.rho() + 1.0);
+        if (boundary[i] != 0) {
+            x.velocity()[i] = 0.;
+        }
+    } 
+    outputStateVtk(grid_, x, 0, "output");
+    outputStateMatlab(grid_, x, 0, "output");
+    exit(1);
     collisionStepScRed(state);
     collisionStepScBlue(state);
     streamingSwap(state);
 //    if (static_cast<int> (dt) % 10 == 0) {
-        massMomentumCalc(state, x);
+    massMomentumCalc(state, x);
 //    }
 }
 
@@ -51,6 +76,11 @@ initDistribution(const double rho, const double x1, const double x2, const int l
     const std::vector<double>& cy = module_.yVelocity();
     const std::vector<double>& cz = module_.zVelocity();
     const std::vector<double>& w = module_.weight();
+    for (auto i = 0; i < w.size(); ++i) {
+        std::cout << w[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "sum of weight: " << std::accumulate(w.begin(), w.end(), 0.0) << std::endl;
     std::vector<double> velocity(grid_.spaceDim(), 0.0);
     
     //set initial state.
@@ -78,13 +108,24 @@ initDistribution(const double rho, const double x1, const double x2, const int l
             }
         }
     }
-
+    std::sort(innerIdx.begin(), innerIdx.end());
+    std::sort(outerIdx.begin(), outerIdx.end());
+    for (auto i = 0; i < innerIdx.size(); ++i) {
+        std::cout << innerIdx[i] << " ";
+    }
+    std::cout << std::endl;
+    for (auto i = 0; i < outerIdx.size(); ++i) {
+        std::cout << outerIdx[i] << " ";
+    }
+    std::cout << std::endl;
     if (loc == 0) {
         for(auto i = 0; i < innerIdx.size(); ++i) {
             for (int k = 0; k < ND; ++k) {
                 double uc = velocity[0] * cx[k] + velocity[1] * cy[k] + velocity[2] * cz[k];
                 double u2 = std::pow(velocity[0], 2) + std::pow(velocity[1], 2) + std::pow(velocity[2],2);
-                dist[innerIdx[i]*ND + k] = rho * w[k] * (1.0 + 3 * uc + 4.5 * std::pow(uc, 2) - 1.5 * u2);
+                double feq = rho * w[k] * (1.0 + 3 * uc + 4.5 * std::pow(uc, 2) - 1.5 * u2);
+    //            std::cout <<"uc: " << uc << " u2: " << u2 << " w[k]: "<< w[k]<<" feq: "  << feq << std::endl;
+                dist[innerIdx[i]*ND + k] = feq; //rho * w[k] * (1.0 + 3 * uc + 4.5 * std::pow(uc, 2) - 1.5 * u2);
             }
         }
     }
@@ -93,7 +134,8 @@ initDistribution(const double rho, const double x1, const double x2, const int l
             for (int k = 0; k < ND; ++k) {
                 double uc = velocity[0] * cx[k] + velocity[1] * cy[k] + velocity[2] * cz[k];
                 double u2 = std::pow(velocity[0], 2) + std::pow(velocity[1], 2) + std::pow(velocity[2],2);
-                dist[outerIdx[i]*ND + k] = rho * w[k] * (1.0 + 3 * uc + 4.5 * std::pow(uc, 2) - 1.5 * u2);
+                double feq = rho * w[k] * (1.0 + 3 * uc + 4.5 * std::pow(uc, 2) - 1.5 * u2);
+                dist[outerIdx[i]*ND + k] = feq; //rho * w[k] * (1.0 + 3 * uc + 4.5 * std::pow(uc, 2) - 1.5 * u2);
             }
         }
     }
@@ -108,6 +150,7 @@ LatticeBoltzmannSolver::initVariables()
     const double x2 = grid_.NX()*3 / 4; 
     initDistribution(red_.rho(), x1, x2, 0, state.red);
     initDistribution(blue_.rho(), x1, x2, 1, state.blue);
+    
     
     return state;
 }

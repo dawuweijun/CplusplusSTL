@@ -385,6 +385,7 @@ void massMomentumCalc(double ****R, double ****B, int ***Solid, char *directory1
 	  }
 
 	  val = temp1 / (RHO + 1.0);
+       std::cout << "val: " << std::endl;
 	  if(Solid[z][y][x] != 0) val = 0.;
 
 	fprintf(dataFile1, "%f ", val);
@@ -394,7 +395,7 @@ void massMomentumCalc(double ****R, double ****B, int ***Solid, char *directory1
       }
     }
 fprintf(dataFile1, "      </DataArray>\n");
-
+exit(1);
     //write pressure
 
     fprintf(dataFile1, "    </PointData>\n");

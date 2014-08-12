@@ -1,9 +1,10 @@
 #ifndef LATTICEBOLTZMANNSOLVER_HEADER_INCLUDED
 #define LATTICEBOLTZMANNSOLVER_HEADER_INCLUDED
+
 #include <opm/lattice/GridManager.hpp>
 #include <opm/lattice/LatticeBoltzmannModule.hpp>
 #include <opm/lattice/FluidProperties.hpp>
-#include <opm/lattice/SimulatorState.hpp>
+#include <opm/lattice/utility/SimulatorState.hpp>
 #include <vector>
 
 class LatticeBoltzmannSolver {
@@ -26,28 +27,37 @@ private:
     const LatticeBoltzmannModule& module_;
     const FluidProperties& red_;
     const FluidProperties& blue_;
-    SolutionState
-    initVariables();
+    // Create variables.
+    SolutionState initVariables();
+    // Initial red and blue distributions.
     void
     initDistribution(const double rho, const double x1, const double x2, const int loc, std::vector<double>& dist);
+    // update state.
     void
     updateState(const SolutionState& state, SimulatorState& x);
+    // Computing potential.
     void 
     potential();
+    // Computing propagation.
     void 
     propagationBySwap(std::vector<double>& dist);
+    // Computing Sc.
     void 
     fcalcSc(std::vector<double>& f);
     double
     NipSc(const int flag, const double Rden, const double Bden, const double cxk, const double cyk, const double czk, const double wk, std::vector<double>& velocity);
+    // Blue and red collision.
     void 
     collisionStepScBlue(SolutionState& state);
     void 
     collisionStepScRed(SolutionState& state);
+    // Swap streaming.
     void
     streamingSwap(SolutionState& state);
+    // Check momentum conservation.
     void
     massMomentumCalc(const SolutionState& state, SimulatorState& x);
+    // Computing pressure.
     void
     pressureCalc(const SolutionState& state, SimulatorState& x);
 };

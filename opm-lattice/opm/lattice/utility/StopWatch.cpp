@@ -1,8 +1,8 @@
-#include <opm/lattice/StopWatch.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <opm/lattice/utility/StopWatch.hpp>
 #include <iostream>
-#include <ctime>
-#include <ratio>
 #include <cassert>
+
 StopWatch::StopWatch()
     : state_(UnStarted)
 {
@@ -11,7 +11,7 @@ StopWatch::StopWatch()
 
 void StopWatch::start()
 {
-    start_time_ = std::chrono::steady_clock::now();
+    start_time_ = boost::posix_time::microsec_clock::local_time();
     last_time_ = start_time_;
     state_ = Running;
 }
@@ -22,41 +22,43 @@ void StopWatch::stop()
         std::cout << "Called stop() on a StopWatch that was not running." << std::endl;
         exit(1);
     }
-    stop_time_ = std::chrono::steady_clock::now();
+    stop_time_ = boost::posix_time::microsec_clock::local_time();
     state_ = Stopped;
 }
 
 double StopWatch::secsSinceLast()
 {
-    std::chrono::steady_clock::time_point run_time;
+    boost::posix_time::ptime run_time;
     if (state_ == Running) {
-    	run_time = std::chrono::steady_clock::now();
+    	run_time = boost::posix_time::microsec_clock::local_time();
     } else if (state_ == Stopped) {
-    	run_time = stop_time_;
+	    run_time = stop_time_;
     } else {
-    	assert(state_ == UnStarted);
-    	std::cout << "Called secsSinceLast() on a StopWatch that had not been started.\n";
+	    assert(state_ == UnStarted);
+	    std::cout << "Called secsSinceLast() on a StopWatch that had not been started.\n";
         exit(1);
     }
-    
-    std::chrono::duration<double> dur = std::chrono::duration_cast<std::chrono::duration<double>>(run_time - last_time_);
+
+    boost::posix_time::time_duration dur = run_time - last_time_;
     last_time_ = run_time;
 
-    return double(dur.count());
+    return double(dur.total_microseconds())/1000000.0;
 }
 
 double StopWatch::secsSinceStart()
 {
-    std::chrono::steady_clock::time_point run_time;
+    boost::posix_time::ptime run_time;
     if (state_ == Running) {
-		run_time = std::chrono::steady_clock::now();
+    	run_time = boost::posix_time::microsec_clock::local_time();
     } else if (state_ == Stopped) {
-		run_time = stop_time_;
+    	run_time = stop_time_;
     } else {
-		assert(state_ == UnStarted);
-		std::cout <<"Called secsSinceStart() on a StopWatch that had not been started.\n";
+	    assert(state_ == UnStarted);
+	    std::cout <<"Called secsSinceStart() on a StopWatch that had not been started.\n";
         exit(1);
     }
-    std::chrono::duration<double> dur = std::chrono::duration_cast<std::chrono::duration<double>>(run_time - start_time_);
-    return double(dur.count());
+
+    boost::posix_time::time_duration dur = run_time - start_time_;
+
+    return double(dur.total_microseconds())/1000000.0;
 }
