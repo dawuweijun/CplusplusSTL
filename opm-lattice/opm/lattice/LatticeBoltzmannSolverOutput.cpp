@@ -24,7 +24,7 @@ outputStateVtk(const GridManager& grid,
         std::cout << "Creating directories failed: " << fpath << std::endl;
         exit(1);
     }
-    vtkfilename << "/output-" << std::setw(6) << std::setfill('0') << step << ".vtu";
+    vtkfilename << "/output-" << std::setw(6) << std::setfill('0') << step << ".vti";
     std::ofstream vtkfile(vtkfilename.str().c_str());
     if (!vtkfile) {
         std::cout << "Failed to open " << vtkfilename.str() << std::endl;
