@@ -76,7 +76,7 @@ initDistribution(const double rho, const double x1, const double x2, const int l
     const std::vector<double>& cy = module_.yVelocity();
     const std::vector<double>& cz = module_.zVelocity();
     const std::vector<double>& w = module_.weight();
-    for (auto i = 0; i < w.size(); ++i) {
+    for (int i = 0; i < static_cast<int>(w.size()); ++i) {
         std::cout << w[i] << " ";
     }
     std::cout << std::endl;
@@ -110,16 +110,16 @@ initDistribution(const double rho, const double x1, const double x2, const int l
     }
     std::sort(innerIdx.begin(), innerIdx.end());
     std::sort(outerIdx.begin(), outerIdx.end());
-    for (auto i = 0; i < innerIdx.size(); ++i) {
+    for (int i = 0; i < static_cast<int>(innerIdx.size()); ++i) {
         std::cout << innerIdx[i] << " ";
     }
     std::cout << std::endl;
-    for (auto i = 0; i < outerIdx.size(); ++i) {
+    for (int i = 0; i < static_cast<int>(outerIdx.size()); ++i) {
         std::cout << outerIdx[i] << " ";
     }
     std::cout << std::endl;
     if (loc == 0) {
-        for(auto i = 0; i < innerIdx.size(); ++i) {
+        for(int i = 0; i < static_cast<int>(innerIdx.size()); ++i) {
             for (int k = 0; k < ND; ++k) {
                 double uc = velocity[0] * cx[k] + velocity[1] * cy[k] + velocity[2] * cz[k];
                 double u2 = std::pow(velocity[0], 2) + std::pow(velocity[1], 2) + std::pow(velocity[2],2);
@@ -130,7 +130,7 @@ initDistribution(const double rho, const double x1, const double x2, const int l
         }
     }
     if (loc == 1) {
-        for (auto i = 0; i < outerIdx.size(); ++i) {
+        for (int i = 0; i < static_cast<int>(outerIdx.size()); ++i) {
             for (int k = 0; k < ND; ++k) {
                 double uc = velocity[0] * cx[k] + velocity[1] * cy[k] + velocity[2] * cz[k];
                 double u2 = std::pow(velocity[0], 2) + std::pow(velocity[1], 2) + std::pow(velocity[2],2);
