@@ -13,5 +13,5 @@ set (opm-lattice_DEPS
 	"CXX11Features"
 	# various runtime library enhancements
 	"Boost 1.44.0
-		COMPONENTS date_time system filesystem REQUIRED"
+		COMPONENTS date_time system filesystem unit_test_framework REQUIRED"
 	)

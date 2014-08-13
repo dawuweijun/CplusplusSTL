@@ -30,16 +30,19 @@ list (APPEND MAIN_SOURCE_FILES
 	opm/lattice/LatticeBoltzmannModule.cpp
 	opm/lattice/FluidProperties.cpp
 	opm/lattice/LatticeBoltzmannSolver.cpp
+	opm/lattice/LatticeBoltzmannSolverOutput.cpp
 	opm/lattice/TwoPhaseLatticeBoltzmannSimulator.cpp
-	opm/lattice/writeVtkData.cpp
-	opm/lattice/StopWatch.cpp
-	opm/lattice/SimulatorState.cpp
-	opm/lattice/SimulatorTimer.cpp
+	opm/lattice/utility/writeVtkData.cpp
+	opm/lattice/utility/StopWatch.cpp
+	opm/lattice/utility/SimulatorState.cpp
+	opm/lattice/utility/SimulatorTimer.cpp
 	)
 
 # originally generated with the command:
 # find tests -name '*.cpp' -a ! -wholename '*/not-unit/*' -printf '\t%p\n' | sort
 list (APPEND TEST_SOURCE_FILES
+	examples/test_grid.cpp
+	examples/test_module.cpp
 	)
 
 # originally generated with the command:
@@ -68,10 +71,11 @@ list (APPEND PUBLIC_HEADER_FILES
 	opm/lattice/LatticeBoltzmannModule.hpp
 	opm/lattice/FluidProperties.hpp
 	opm/lattice/LatticeBoltzmannSolver.hpp
+	opm/lattice/LatticeBoltzmannSolverOutput.hpp
 	opm/lattice/TwoPhaseLatticeBoltzmannSimulator.hpp
-	opm/lattice/writeVtkData.hpp
-	opm/lattice/DataMap.hpp
-	opm/lattice/StopWatch.hpp
-	opm/lattice/SimulatorState.hpp
-	opm/lattice/SimulatorTimer.hpp
+	opm/lattice/utility/writeVtkData.hpp
+	opm/lattice/utility/DataMap.hpp
+	opm/lattice/utility/StopWatch.hpp
+	opm/lattice/utility/SimulatorState.hpp
+	opm/lattice/utility/SimulatorTimer.hpp
 	)
