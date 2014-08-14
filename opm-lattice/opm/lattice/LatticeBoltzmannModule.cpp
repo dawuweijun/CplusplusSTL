@@ -14,7 +14,6 @@ LatticeBoltzmannModule::LatticeBoltzmannModule()
     const double w1 = 1.0 / 36.0;
     const double w2 = 1.0 / 18.0;
     const double c0 = 0.0;
-//   const double c1 = std::sqrt(2);
     const double c2 = 1.0;
     /* Default directional velocities */
     const double c_x[19] = {c2,-c2, c0, c0, c0, c0, c2,-c2, c2,-c2, c2,-c2, c2,-c2, c0, c0, c0, c0, c0};

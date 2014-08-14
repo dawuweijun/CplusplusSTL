@@ -20,7 +20,7 @@ int main()
     SimulatorTimer simtimer;
     simtimer.init(1e1, 1);
 
-    grid.reset(new GridManager(4, 4, 4));
+    grid.reset(new GridManager(10, 10, 10));
     module.reset(new LatticeBoltzmannModule());
     red.reset(new FluidProperties(*grid, *module, 1.0, 1.0, 0.1667, 0.1));
     blue.reset(new FluidProperties(*grid, *module, 1.0, 1.0, 0.1667, 0.1));

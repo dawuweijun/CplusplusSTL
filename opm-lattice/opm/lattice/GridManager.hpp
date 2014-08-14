@@ -13,7 +13,11 @@ public:
     int dimension() const;
     int spaceDim() const;
     int index(const int x, const int y, const int z) const;
-    const std::vector<int>& boundary() const { return boundary_; }
+
+    inline const std::vector<int>& boundary() const 
+    { 
+        return boundary_; 
+    }
     std::vector<int>& boundary() {return boundary_; }
     const int NX() const { return NX_; }
     const int NY() const { return NY_; }

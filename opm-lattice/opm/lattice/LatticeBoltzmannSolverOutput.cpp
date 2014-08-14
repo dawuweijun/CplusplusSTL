@@ -32,7 +32,7 @@ outputStateVtk(const GridManager& grid,
     }
     DataMap dm;
     dm["density"] = &state.velocity();
-    dm["pressure"] = &state.pressure();
+//    dm["pressure"] = &state.pressure();
     writeVtkData(grid, dm, vtkfile);
 }
 

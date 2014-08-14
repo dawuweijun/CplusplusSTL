@@ -99,15 +99,16 @@ run(SimulatorTimer& timer, SimulatorState& state)
     while (!timer.done()) {
         step_timer.start();
         timer.report(std::cout);
+        std::cout << "timer.currentStepNum: " << timer.currentStepNum() << " output_interval_: " << output_interval_ << std::endl;
+        solver_timer.start();
+        solver_.step(timer.currentStepLength(), state);
+        solver_timer.stop();
         if (output_ && (timer.currentStepNum() % output_interval_ == 0)) {
             if (output_vtk_) {
                 outputStateVtk(grid_, state, timer.currentStepNum(), output_dir_);
             }
             outputStateMatlab(grid_, state, timer.currentStepNum(), output_dir_);
         }
-        solver_timer.start();
-        solver_.step(timer.currentStepLength(), state);
-        solver_timer.stop();
         const double st = solver_timer.secsSinceStart();
         std::cout << "Lattice Boltzmann Simulator took: " << st << " seconds." << std::endl;
         stime += st;
