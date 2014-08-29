@@ -24,58 +24,14 @@ LatticeBoltzmannSolver::LatticeBoltzmannSolver(const GridManager& grid, const La
         ,red_(red)
         ,blue_(blue)
 {
-    const int ND = module_.numDirection();
-    assert(ND == 19);
-    std::vector<double> velocity(3, 0.0);
-    //set initial state.
-    //create a tube.
-    std::vector<int> innerIdx;
-    std::vector<int> outerIdx;
-    const int x1 = grid.NX() / 4;
-    const int x2 = grid.NX()*3 / 4;
-    const int xmax = std::max(x1, x2);
-    const int xmin = std::min(x1, x2);
-    std::cout << xmin << xmax<< std::endl;
-    for (int z = 0; z < grid.NZ(); ++z) {
-        for (int y = 0; y < grid.NY(); ++y) {
-            for (int x = 0; x < grid.NX(); ++x) {
-                if (x < xmin || x > xmax) {
-                    std::cout << grid.index(x,y,z) <<"\n";
-                    outerIdx.push_back(grid.index(x,y,z));
-                } //else {
-//                if (x >= xmin && x <= xmax) {
-                    innerIdx.push_back(grid.index(x,y,z));
-                }
-            }
-        }
-    }
-    std::vector<double> redDen(grid.dimension(), 0.0);
-    std::vector<double> blueDen(grid.dimension(), 0.0);
-    std::cout << "outer: " << outerIdx.size() << "inner: " << innerIdx.size() << "\n";
-    for (auto i = 0; i < outerIdx.size(); ++i) {
-        for (int k = 0; k < ND; ++k) {
-            double uc = velocity[0]*xVelocity_[k] + velocity[1]*yVelocity_[k] + velocity[2]*zVelocity_[k];
-    //        double uc = velocity[0] * cx[k] + velocity[1] * cy[k] + velocity[2] * cz[k];
-            double u2 = std::pow(velocity[0], 2) + std::pow(velocity[1], 2) + std::pow(velocity[2],2);
-            double feq = blue.rho()*weight_[k]*(1.0 + 3*uc + 4.5*std::pow(uc, 2) - 1.5*u2);
-//            std::cout << outerIdx[i] <<"\n";
-            blueDen[outerIdx[i]*ND + k] = feq; 
-        }
-    }
-    for(auto i = 0; i < innerIdx.size(); ++i) {
-        for (int k = 0; k < ND; ++k) {
-            double uc = velocity[0]*xVelocity_[k] + velocity[1]*yVelocity_[k] + velocity[2]*zVelocity_[k];
-            double u2 = std::pow(velocity[0], 2) + std::pow(velocity[1], 2) + std::pow(velocity[2],2);
-            double feq = red.rho()*weight_[k]*(1.0 + 3*uc + 4.5*std::pow(uc, 2) - 1.5*u2);
-            redDen[innerIdx[i]*ND + k] = feq;
-        }
-    }
-
-    std::copy(redDen.begin(), redDen.end(), state.redDensity().begin());
-    std::copy(blueDen.begin(), blueDen.end(), state.blueDensity().begin());
-}
 }
 
+
+
+LatticeBoltzmannSolver::SolutionState::SolutionState(const int size)
+    : red (std::vector<double>(size, 0))
+    , blue(std::vector<double>(size, 0))
+{}
 
 void
 LatticeBoltzmannSolver::step(const double dt, SimulatorState& x)

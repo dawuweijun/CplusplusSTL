@@ -14,9 +14,10 @@ outputStateVtk(const GridManager& grid,
                const int step,
                const std::string& output_dir)
 {
-    std::ostringstream vtkfilename;
-    vtkfilename << output_dir << "/vtk_files";
-    boost::filesystem::path fpath(vtkfilename.str());
+    std::ostringstream vtkbluename, vtkredname;
+    vtkbluename << output_dir << "/vtk_files";
+    vtkredname << output_dir << "/vtk_files";
+    boost::filesystem::path fpath(vtkbluename.str());
     try {
         create_directories(fpath);
     }
@@ -24,17 +25,19 @@ outputStateVtk(const GridManager& grid,
         std::cout << "Creating directories failed: " << fpath << std::endl;
         exit(1);
     }
-    vtkfilename << "/output-" << std::setw(6) << std::setfill('0') << step << ".vti";
-    std::ofstream vtkfile(vtkfilename.str().c_str());
-    if (!vtkfile) {
-        std::cout << "Failed to open " << vtkfilename.str() << std::endl;
+    vtkbluename << "/blue-" << std::setw(6) << std::setfill('0') << step << ".vti";
+    std::ofstream vtkblue(vtkbluename.str().c_str());
+    vtkredname << "/red-" << std::setw(6) << std::setfill('0') << step << ".vti";
+    std::ofstream vtkred(vtkredname.str().c_str());
+    if (!vtkblue && !vtkred) {
+        std::cout << "Failed to open " << vtkbluename.str() << vtkredname.str() << std::endl;
         exit(1);
     }
-    DataMap dm;
+    DataMap dm, ddm;
     dm["reddensity"] = &state.redDensity();
-    dm["bluedensity"] = &state.blueDensity();
-//    dm["pressure"] = &state.pressure();
-    writeVtkData(grid, dm, vtkfile);
+    ddm["bluedensity"] = &state.blueDensity();
+    writeVtkData(grid, dm, vtkred);
+    writeVtkData(grid, ddm, vtkblue);
 }
 
 

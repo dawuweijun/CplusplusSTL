@@ -77,7 +77,7 @@ TwoPhaseLatticeBoltzmannSimulator::Impl::Impl(const GridManager& grid,
             std::cout << "Creating directories failed: " << fpath << std::endl;
             exit(1);
         }
-        output_interval_ = 100;
+        output_interval_ = 10;
     }
 }
 
@@ -99,7 +99,6 @@ run(SimulatorTimer& timer, SimulatorState& state)
     while (!timer.done()) {
         step_timer.start();
         timer.report(std::cout);
-        std::cout << "timer.currentStepNum: " << timer.currentStepNum() << " output_interval_: " << output_interval_ << std::endl;
         solver_timer.start();
         solver_.step(timer.currentStepLength(), state);
         solver_timer.stop();
@@ -116,5 +115,5 @@ run(SimulatorTimer& timer, SimulatorState& state)
     }
     total_timer.stop();
     std::cout << "Total time taken: " << total_timer.secsSinceStart()
-              << "\n Solver Time taken: " << stime;
+              << "\n"<<"Solver Time taken: " << stime;
 }

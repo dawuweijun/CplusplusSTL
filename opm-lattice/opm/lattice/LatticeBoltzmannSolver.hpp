@@ -28,10 +28,7 @@ private:
     const FluidProperties& red_;
     const FluidProperties& blue_;
     // Create variables.
-    SolutionState initVariables();
-    // Initial red and blue distributions.
-    void
-    initDistribution(const double rho, const double x1, const double x2, const int loc, std::vector<double>& dist);
+    SolutionState initVariables(const SimulatorState& x);
     // update state.
     void
     updateState(const SolutionState& state, SimulatorState& x);

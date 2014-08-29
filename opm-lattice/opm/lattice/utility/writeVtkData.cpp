@@ -34,14 +34,6 @@ void writeVtkData(const GridManager& grid,
         os << "       <DataArray type=\"Float32\" Name=\""<<dit->first<<"\" NumberOfComponents=\""<<boost::lexical_cast<std::string>(num_comps)<<"\" format=\"ascii\">\n"; 
         const int num_per_line =  num_comps == 1 ? 5 : num_comps;
         std::cout << "num_per_line: " << num_per_line << std::endl;
-        std::vector<int> idx;
-        for (int x = 0; x < grid.NX(); ++x) {
-            for (int y = 0; y < grid.NY(); ++y) {
-                for (int z = 0; z < grid.NZ(); ++z) {
-                    idx.push_back(grid.index(x, y, z));
-                }
-            }
-        }
         for (int i= 0; i < num_pts; ++i) {
             if (i % num_per_line == 0) {
                 os <<"      ";
