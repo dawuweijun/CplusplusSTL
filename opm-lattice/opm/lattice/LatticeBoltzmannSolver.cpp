@@ -44,32 +44,35 @@ LatticeBoltzmannSolver::step(const double dt, SimulatorState& x)
     const int ND = module_.numDirection();
     const int N = grid_.dimension();
     const std::vector<int>& boundary = grid_.boundary();
+/*
     std::cout << "Boundary: \n";
     for (int i = 0; i < static_cast<int>(boundary.size()); ++i) {
         std::cout << boundary[i] << "  ";
     }
     std::cout << std::endl;
     std::cout << "Index: \n";
-    for (int x = 0; x < grid_.NX(); ++x) {
+    for (int z = 0; z < grid_.NZ(); ++z) {
         for (int y = 0; y < grid_.NY(); ++y) {
-            for (int z = 0; z < grid_.NZ(); ++z) {
+            for (int x = 0; x < grid_.NX(); ++x) {
                 std::cout << grid_.index(x, y, z) << "  "; 
            }
         }
     }
     std::cout << "\nEnd of Index.\n";
-    x.velocity().resize(N*2);
+*/
+    x.redDensity().resize(N);
+    x.blueDensity().resize(N);
     for (int i = 0; i < N; ++i) {
         double tmp =0, tmp2=0;
         for (int k = 0; k < ND; ++k) {
             tmp += state.red[i*ND + k];
             tmp2 += state.blue[i*ND + k];
         }
-        x.velocity()[i*2] = 1;//tmp / (red_.rho() + 1.0);
-        x.velocity()[i*2 + 1] = 1;//tmp2 / (blue_.rho() + 1.0);
+        x.redDensity()[i] = tmp / (red_.rho() + 1.0);
+        x.blueDensity()[i] = tmp2 / (blue_.rho() + 1.0);
         if (boundary[i] != 0) {
-            x.velocity()[2*i] = 0.;
-            x.velocity()[2*i+1] = 0.;
+            x.redDensity()[i] = 0.;
+            x.blueDensity()[i] = 0.;
         }
     } 
     outputStateVtk(grid_, x, 0, "output");
@@ -110,6 +113,18 @@ initDistribution(const double rho, const double x1, const double x2, const int l
     const int xmin = std::min(x1, x2);
     int x = 0;
     std::cout << "(xmin, xmax) " << "(" << xmin << ", " << xmax << ")" << std::endl;
+    for (int z = 0; z < grid_.NZ(); ++z) {
+        for (int y = 0; y < grid_.NY(); ++y) {
+            for (int x = 0; x < grid_.NX(); ++x) {
+                if (x < xmin || x > xmax) {
+                    outerIdx.push_back(grid_.index(x,y,z));
+                    continue;
+                }
+                innerIdx.push_back(grid_.index(x,y,z));
+            }
+        }
+    }
+/*
     while (x < xmin || x > xmax){
         for (int z = 0; z < grid_.NZ(); ++z) {
             for (int y = 0; y < grid_.NY(); ++y) {
@@ -136,14 +151,14 @@ initDistribution(const double rho, const double x1, const double x2, const int l
         std::cout << outerIdx[i] << " ";
     }
     std::cout << std::endl;
+*/
     if (loc == 0) {
         for(int i = 0; i < static_cast<int>(innerIdx.size()); ++i) {
             for (int k = 0; k < ND; ++k) {
-                double uc = velocity[0] * cx[k] + velocity[1] * cy[k] + velocity[2] * cz[k];
+                double uc = velocity[0]*cx[k] + velocity[1]*cy[k] + velocity[2]*cz[k];
                 double u2 = std::pow(velocity[0], 2) + std::pow(velocity[1], 2) + std::pow(velocity[2],2);
-                double feq = rho * w[k] * (1.0 + 3 * uc + 4.5 * std::pow(uc, 2) - 1.5 * u2);
-    //            std::cout <<"uc: " << uc << " u2: " << u2 << " w[k]: "<< w[k]<<" feq: "  << feq << std::endl;
-                dist[innerIdx[i]*ND + k] = feq; //rho * w[k] * (1.0 + 3 * uc + 4.5 * std::pow(uc, 2) - 1.5 * u2);
+                double feq = rho*w[k]*(1.0 + 3*uc + 4.5*std::pow(uc, 2) - 1.5*u2);
+                dist[innerIdx[i]*ND + k] = feq;
             }
         }
     }
@@ -152,8 +167,8 @@ initDistribution(const double rho, const double x1, const double x2, const int l
             for (int k = 0; k < ND; ++k) {
                 double uc = velocity[0] * cx[k] + velocity[1] * cy[k] + velocity[2] * cz[k];
                 double u2 = std::pow(velocity[0], 2) + std::pow(velocity[1], 2) + std::pow(velocity[2],2);
-                double feq = rho * w[k] * (1.0 + 3 * uc + 4.5 * std::pow(uc, 2) - 1.5 * u2);
-                dist[outerIdx[i]*ND + k] = feq; //rho * w[k] * (1.0 + 3 * uc + 4.5 * std::pow(uc, 2) - 1.5 * u2);
+                double feq = rho*w[k]*(1.0 + 3*uc + 4.5*std::pow(uc, 2) - 1.5*u2);
+                dist[outerIdx[i]*ND + k] = feq; 
             }
         }
     }

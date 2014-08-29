@@ -13,20 +13,20 @@ GridManager::GridManager(const int NX, const int NY, const int NZ)
     std::vector<int> idx;
     //compute inner index.
 /*    for (int y  = 0; y < NY_; ++y) {
-        for (int z = 0; z < NZ_; ++z) {
+        for (int x = 0; x < NX_; ++x) {
             idx.push_back(index(0, y, z));
             idx.push_back(index(NX_-1, y, z));
         }
     }
 */
-    for (int x = 0; x < NX_; ++x) {
-        for (int z = 0; z < NZ_; ++z) {
+    for (int z = 0; z < NZ_; ++z) {
+        for (int x = 0; x < NX_; ++x) {
             idx.push_back(index(x, 0, z));
             idx.push_back(index(x, NY_-1, z));
         }
     }
-    for (int x = 0; x < NX_; ++x) {
-        for (int y = 0; y < NY_; ++y) {
+    for (int y = 0; y < NY_; ++y) {
+        for (int x = 0; x < NX_; ++x) {
             idx.push_back(index(x, y, 0));
             idx.push_back(index(x, y, NZ_-1));
         }
@@ -56,37 +56,5 @@ GridManager::spaceDim() const
 int 
 GridManager::index(const int x, const int y, const int z) const
 {
-    return NZ_ * NY_ * x +  NZ_ * y + z;
-}
-void
-GridManager::setBoundary()
-{
-    std::vector<int> idx;
-    //compute inner index.
- /*
-    for (int z  = 0; z < NZ_; ++z) {
-        for (int y = 0; y < NY_; ++y) {
-            idx.push_back(index(0, y, z));
-            idx.push_back(index(NX_-1, y, z));
-        }
-    }
-*/
-    for (int z = 0; z < NZ_; ++z) {
-        for (int x = 0; x < NX_; ++x) {
-            idx.push_back(index(x, 0, z));
-            idx.push_back(index(x, NY_-1, z));
-        }
-    }
-    for (int y = 0; y < NY_; ++y) {
-        for (int x = 0; x < NX_; ++x) {
-            idx.push_back(index(x, y, 0));
-            idx.push_back(index(x, y, NZ_-1));
-        }
-    }
-    for (int i = 0; i < static_cast<int>(idx.size()); ++i) {
-        boundary_[idx[i]] = 1;
-    }
-    std::cout << "Debuging:\n";
-    std::cout << "boudndary_ size: " << boundary_.size() << std::endl;
-   
+    return NX_ * NY_ * z +  NX_ * y + x;
 }

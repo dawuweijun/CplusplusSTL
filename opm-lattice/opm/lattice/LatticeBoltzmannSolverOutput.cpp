@@ -31,7 +31,8 @@ outputStateVtk(const GridManager& grid,
         exit(1);
     }
     DataMap dm;
-    dm["density"] = &state.velocity();
+    dm["reddensity"] = &state.redDensity();
+    dm["bluedensity"] = &state.blueDensity();
 //    dm["pressure"] = &state.pressure();
     writeVtkData(grid, dm, vtkfile);
 }
@@ -44,7 +45,8 @@ outputStateMatlab(const GridManager& grid,
                   const std::string& output_dir)
 {
     DataMap dm;
-    dm["density"] = &state.velocity();
+    dm["reddensity"] = &state.redDensity();
+    dm["bluedensity"] = &state.blueDensity();
     dm["pressure"] = &state.pressure();
     // Write data (not grid) in Matlab format
     for (DataMap::const_iterator it = dm.begin(); it != dm.end(); ++it) {

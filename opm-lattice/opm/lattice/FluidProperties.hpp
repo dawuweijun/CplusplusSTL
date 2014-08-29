@@ -5,11 +5,10 @@ author: Ming Liu
 email:  qilicun@outlook.com
 */
 #include <opm/lattice/GridManager.hpp>
-#include <opm/lattice/LatticeBoltzmannModule.hpp>
 
 class FluidProperties{
 public:
-    FluidProperties(const GridManager& gird, const LatticeBoltzmannModule& module, const double, const double, const double, const double);
+    FluidProperties(const GridManager& gird, const double rho, const double tau, const double mu, const double velmax);
     const double rho() const { return  rho_; }
     const double tau() const { return tau_; }
     const double mu() const { return mu_; }

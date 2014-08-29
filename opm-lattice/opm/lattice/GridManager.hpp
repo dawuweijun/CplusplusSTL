@@ -14,10 +14,7 @@ public:
     int spaceDim() const;
     int index(const int x, const int y, const int z) const;
 
-    inline const std::vector<int>& boundary() const 
-    { 
-        return boundary_; 
-    }
+    const std::vector<int>& boundary() const { return boundary_; }
     std::vector<int>& boundary() {return boundary_; }
     const int NX() const { return NX_; }
     const int NY() const { return NY_; }
@@ -28,6 +25,5 @@ private:
     const int NY_;
     const int NZ_;
     std::vector<int> boundary_;
-    void setBoundary();
 };
 #endif //GRID_HEADER_INCLUDED

@@ -32,31 +32,29 @@ void writeVtkData(const GridManager& grid,
         std::cout << "name: " << dit->first << "  size: " << field.size()<<std::endl;
         std::cout << "num_comps: " << num_comps<< std::endl;
         os << "       <DataArray type=\"Float32\" Name=\""<<dit->first<<"\" NumberOfComponents=\""<<boost::lexical_cast<std::string>(num_comps)<<"\" format=\"ascii\">\n"; 
-        const int num_per_line =  num_comps;// == 1 ? 5 : num_comps;
+        const int num_per_line =  num_comps == 1 ? 5 : num_comps;
         std::cout << "num_per_line: " << num_per_line << std::endl;
         std::vector<int> idx;
         for (int x = 0; x < grid.NX(); ++x) {
             for (int y = 0; y < grid.NY(); ++y) {
                 for (int z = 0; z < grid.NZ(); ++z) {
-                    idx.push_back(grid.index(z, y, x));
+                    idx.push_back(grid.index(x, y, z));
                 }
             }
         }
         for (int i= 0; i < num_pts; ++i) {
-   //         if (i % num_per_line == 0) {
+            if (i % num_per_line == 0) {
                 os <<"      ";
-   //         }
-            double value1 = field[num_comps*idx[i]];
-            double value2 = field[num_comps*idx[i] + 1];
-            if (std::fabs(value1) < std::numeric_limits<double>::min() && std::fabs(value2) < std::numeric_limits<double>::min()) {
+            }
+            double value = field[i];
+            if (std::fabs(value) < std::numeric_limits<double>::min()) {
                 // Avoiding denormal numbers to work around
                 // bug in Paraview.
-                value1 = 0.0;
-                value2 = 0.0;
+                value = 0.0;
             }
-            os << value1 << "    " << value2 << "\n";
-//            if (i % num_per_line == num_per_line - 1
-             if(i == num_pts - 1) {
+            os << value << "   ";
+            if (i % num_per_line == num_per_line - 1
+                || i == num_pts - 1) {
                 os << '\n';
             }
         }

@@ -1,0 +1,31 @@
+    for(int z = 0; z < NZ; ++z) {
+		double ztop = (z >= NZ-1 ? z+1-NZ : z+1);
+	    double zbot = (z <= 0 ? z-1+NZ : z-1);
+        for(int y = 0; y < NY; ++y) {
+	        double ytop = (y >= NY-1 ? y+1-NY : y+1);
+        	double ybot = (y <= 0 ? y-1+NY : y-1);
+            for(int x = 0; x < NX; ++x) {
+	            int xtop = (x >= NX-1 ? x+1-NX : x+1);
+            	int xbot = (x <= 0 ? x-1+NX : x-1);
+                int idx1 = grid_.index(x, y, z);
+                int idx2 = grid_.index(xbot, y, z);
+                std::swap(dis[idx1*ND + 0], dis[idx2*ND + 1]);
+                idx2 = grid_.index(x, ybot, z);
+                std::swap(dis[idx1*ND + 2], dis[idx2*ND + 3]);
+                idx2 = grid_.index(x, y, zbot);
+                std::swap(dis[idx1*ND + 4], dis[idx2*ND + 5]);
+                idx2 = grid_.index(xbot, ybot, z);
+                std::swap(dis[idx1*ND + 6], dis[idx2*ND + 7]);
+                idx2 = grid_.index(xbot, ytop, z);
+                std::swap(dis[idx1*ND + 8], dis[idx2*ND + 9]);
+                idx2 = grid_.index(xbot, y, zbot);
+                std::swap(dis[idx1*ND + 10], dis[idx2*ND + 11]);
+                idx2 = grid_.index(xbot, y, ztop);
+                std::swap(dis[idx1*ND + 12], dis[idx2*ND + 13]);
+                idx2 = grid_.index(x, ybot, zbot);
+                std::swap(dis[idx1*ND + 14], dis[idx2*ND + 15]);
+                idx2 = grid_.index(x, ybot, ztop);
+                std::swap(dis[idx1*ND + 16], dis[idx2*ND + 17]);
+	        }
+        }
+    }
