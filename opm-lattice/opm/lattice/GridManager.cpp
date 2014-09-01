@@ -30,18 +30,19 @@ GridManager::GridManager(const int NX, const int NY, const int NZ)
             idx.push_back(index(x, y, NZ_-1));
         }
     }
-    for (int i = 0; i < static_cast<int>(idx.size()); ++i) {
+    typedef std::vector<int>::size_type vec_sz;
+    for (vec_sz i = 0; i < idx.size(); ++i) {
         boundary_[idx[i]] = 1;
     }
 }
 
-int
+const int
 GridManager::dimension() const
 {
     return NX_ * NY_ * NZ_;
 }
 
-int
+const int
 GridManager::spaceDim() const
 {
     if (NZ_ == 1)
@@ -50,7 +51,7 @@ GridManager::spaceDim() const
         return 3;
 }
 
-int 
+const int 
 GridManager::index(const int x, const int y, const int z) const
 {
     return NX_ * NY_ * z +  NX_ * y + x;

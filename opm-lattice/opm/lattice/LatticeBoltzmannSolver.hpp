@@ -26,7 +26,7 @@ private:
     const FluidProperties& red_;
     const FluidProperties& blue_;
     // Create variables.
-    SolutionState initVariables(const SimulatorState& x);
+    SolutionState initVariables(SimulatorState& x);
     // update state.
     void
     updateState(const SolutionState& state, SimulatorState& x);

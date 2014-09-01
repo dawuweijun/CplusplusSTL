@@ -25,8 +25,9 @@ LatticeBoltzmannModule::LatticeBoltzmannModule()
     const double c_z[19] = {c0, c0, c0, c0, c2,-c2, c0, c0, c0, c0, c2,-c2,-c2, c2, c2,-c2,-c2, c2, c0}; 
     /* Weight array */
     const double w[19] = {w2, w2, w2, w2, w2, w2, w1, w1, w1, w1, w1, w1, w1, w1, w1, w1, w1, w1, w0};
-    xVelocity_ = std::vector<double>(c_x, c_x + 19);
-    yVelocity_ = std::vector<double>(c_y, c_y + 19);
-    zVelocity_ = std::vector<double>(c_z, c_z + 19);
-    weight_    = std::vector<double>(w  , w   + 19);
+
+    std::copy(&c_x[0], &c_x[0] + 19, xVelocity_.begin());
+    std::copy(&c_y[0], &c_y[0] + 19, yVelocity_.begin());
+    std::copy(&c_z[0], &c_z[0] + 19, zVelocity_.begin());
+    std::copy(&w[0], &w[0] + 19, weight_.begin());
 }

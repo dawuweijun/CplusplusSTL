@@ -22,7 +22,7 @@ public:
     const double tau() const { return tau_; }
     const double mu() const { return mu_; }
     const double velmax() const { return velmax_; }
-    const double lambda() const { return -2.0 / (6*tau_*mu_ + 1); }
+    const double lambda() const { return -2.0 / (6.0*tau_*mu_ + 1.0); }
     const std::vector<double> gff() const { return gff_; }
     const std::vector<double> gfs() const { return gfs_; }
 private:

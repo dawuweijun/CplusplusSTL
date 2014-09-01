@@ -37,6 +37,7 @@ list (APPEND MAIN_SOURCE_FILES
 	opm/lattice/utility/SimulatorState.cpp
 	opm/lattice/utility/SimulatorTimer.cpp
 	opm/lattice/utility/initState.cpp
+	opm/lattice/utility/updateState.cpp
 	)
 
 # originally generated with the command:
@@ -80,4 +81,5 @@ list (APPEND PUBLIC_HEADER_FILES
 	opm/lattice/utility/SimulatorState.hpp
 	opm/lattice/utility/SimulatorTimer.hpp
 	opm/lattice/utility/initState.hpp
+	opm/lattice/utility/updateState.hpp
 	)

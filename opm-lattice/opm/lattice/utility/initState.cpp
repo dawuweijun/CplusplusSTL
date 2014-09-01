@@ -37,7 +37,7 @@ initState(SimulatorState& state,
         }
     }
 
-    typedef std::vector<double>::size_type vec_size;
+    typedef std::vector<int>::size_type vec_size;
     for (vec_size i = 0; i < outerIdx.size(); ++i) {
         for (int k = 0; k < ND; ++k) {
             double uc = velocity[0] * cx[k] + velocity[1] * cy[k] + velocity[2] * cz[k];
@@ -46,7 +46,7 @@ initState(SimulatorState& state,
             state.blueDist()[outerIdx[i]*ND + k] = feq; 
         }
     }
-    for(auto i = 0; i < innerIdx.size(); ++i) {
+    for(vec_size i = 0; i < innerIdx.size(); ++i) {
         for (int k = 0; k < ND; ++k) {
             double uc = velocity[0] * cx[k] + velocity[1] * cy[k] + velocity[2] * cz[k];
             double u2 = std::pow(velocity[0], 2) + std::pow(velocity[1], 2) + std::pow(velocity[2],2);

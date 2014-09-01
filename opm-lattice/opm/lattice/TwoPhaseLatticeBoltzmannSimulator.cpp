@@ -7,6 +7,7 @@
 #include <opm/lattice/utility/StopWatch.hpp>
 #include <opm/lattice/utility/SimulatorState.hpp>
 #include <opm/lattice/utility/SimulatorTimer.hpp>
+#include <opm/lattice/utility/updateState.hpp>
 #include <boost/filesystem.hpp>
 
 #include <numeric>
@@ -77,7 +78,7 @@ TwoPhaseLatticeBoltzmannSimulator::Impl::Impl(const GridManager& grid,
             std::cout << "Creating directories failed: " << fpath << std::endl;
             exit(1);
         }
-        output_interval_ = 10;
+        output_interval_ = 100;
     }
 }
 
@@ -96,17 +97,25 @@ run(SimulatorTimer& timer, SimulatorState& state)
         std::string filename = output_dir_ + "/step_timing.txt";
         tstep_os.open(filename.c_str(), std::fstream::out | std::fstream::app);
     }
+    if (output_) {
+        updateState(state, grid_, red_, blue_, module_);
+        if (output_vtk_) {
+            outputStateVtk(grid_, state, 0, output_dir_);
+        }
+        outputStateMatlab(grid_, state, 0, output_dir_);
+    }
     while (!timer.done()) {
         step_timer.start();
         timer.report(std::cout);
         solver_timer.start();
         solver_.step(timer.currentStepLength(), state);
         solver_timer.stop();
-        if (output_ && (timer.currentStepNum() % output_interval_ == 0)) {
+        if (output_ ) {
+            updateState(state, grid_, red_, blue_, module_);
             if (output_vtk_) {
-                outputStateVtk(grid_, state, timer.currentStepNum(), output_dir_);
+                outputStateVtk(grid_, state, timer.currentStepNum()+1, output_dir_);
             }
-            outputStateMatlab(grid_, state, timer.currentStepNum(), output_dir_);
+            outputStateMatlab(grid_, state, timer.currentStepNum()+1, output_dir_);
         }
         const double st = solver_timer.secsSinceStart();
         std::cout << "\n     Lattice Boltzmann Simulator took: " << st << " seconds." << std::endl;

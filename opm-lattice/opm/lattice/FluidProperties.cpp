@@ -11,7 +11,8 @@ FluidProperties::FluidProperties(const LatticeBoltzmannModule& module,
       ,velmax_(velmax)
       ,gff_(std::vector<double>(module.numDirection()))
       ,gfs_(std::vector<double>(module.numDirection()))
-{}
+{
+}
 
 void
 FluidProperties::setPotential(const double g0,

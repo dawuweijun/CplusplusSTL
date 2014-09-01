@@ -21,32 +21,22 @@ int main()
     std::shared_ptr<LatticeBoltzmannModule> module;
     SimulatorState state;
     SimulatorTimer simtimer;
-    simtimer.init(1e1, 1);
+    simtimer.init(1e6, 1);
 
     grid.reset(new GridManager(80, 20, 20));
     module.reset(new LatticeBoltzmannModule());
     red.reset(new FluidProperties(*module, 1.0, 1.0, 0.1667, 0.1));
     blue.reset(new FluidProperties(*module, 1.0, 1.0, 0.1667, 0.1));
 
-//    red->setPotential(0.0, -0.2, -0.1, -0.01);
-//    blue->setPotential(0.0, -0.2, -0.1, 0.01);
-    red->setPotential(0.0, 0.0,0.0, 0.0);
-    blue->setPotential(0.0, 0.0, 0.0, 0.0);
-/*
-    std::cout << "gff:\n";
-    for (int i = 0; i < static_cast<int>(red->gff().size()); ++i)
-        std::cout << red->gff()[i] << " ";
-    std::cout << "\n";
-    std::copy (red->gff().begin(), red->gff().end(), std::ostream_iterator<double>(std::cout, " "));
-*/
+    red->setPotential(0.0, -0.2, -0.1, -0.01);
+    blue->setPotential(0.0, -0.2, -0.1, 0.01);
+
     state.init(*grid, *module);
-    
     initState(state, *grid, *red, *blue, *module);
  
     TwoPhaseLatticeBoltzmannSimulator simulator(*grid, *red, *blue, *module);
     std::cout << "\n\n================    Starting main simulation loop     ===============\n"
               << std::flush;
-
     simulator.run(simtimer, state);
     std::cout << "\n\n================    End of simulation     ===============\n\n";
     

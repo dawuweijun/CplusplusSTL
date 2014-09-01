@@ -9,7 +9,7 @@ class LatticeBoltzmannModule{
 public:
     LatticeBoltzmannModule();
     const int numDirection() const { return number_of_direction_; }
-    std::string name() const { return name_; }
+    const std::string name() const { return name_; }
     std::vector<double>& xVelocity() { return xVelocity_; }
     std::vector<double>& yVelocity() { return yVelocity_; }
     std::vector<double>& zVelocity() { return zVelocity_; }

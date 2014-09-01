@@ -10,9 +10,9 @@ class GridManager{
 public:
     GridManager(const int NX, const int NY, const int NZ);
     GridManager(const int NX, const int NY);
-    int dimension() const;
-    int spaceDim() const;
-    int index(const int x, const int y, const int z) const;
+    const int dimension() const;
+    const int spaceDim() const;
+    const int index(const int x, const int y, const int z) const;
 
     const std::vector<int>& boundary() const { return boundary_; }
     std::vector<int>& boundary() {return boundary_; }
