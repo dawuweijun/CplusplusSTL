@@ -13,6 +13,7 @@ public:
     void 
     step(const double dt, SimulatorState& x);
 private:
+
     struct SolutionState {
         SolutionState(const int size);
         std::vector<double> red;
@@ -20,9 +21,6 @@ private:
     };
     double externalForce_;
     double fluxForce_;
-    double flux_;
-    std::vector<double> gff_;
-    std::vector<double> gfs_;
     const GridManager& grid_;
     const LatticeBoltzmannModule& module_;
     const FluidProperties& red_;
@@ -32,22 +30,21 @@ private:
     // update state.
     void
     updateState(const SolutionState& state, SimulatorState& x);
-    // Computing potential.
-    void 
-    potential();
     // Computing propagation.
     void 
     propagationBySwap(std::vector<double>& dist);
     // Computing Sc.
     void 
-    fcalcSc(std::vector<double>& f);
+    fcalcSc(std::vector<double>& f,
+            const std::vector<double>& gff,
+            const std::vector<double>& gfs);
     double
     NipSc(const int flag, const double Rden, const double Bden, const double cxk, const double cyk, const double czk, const double wk, std::vector<double>& velocity);
     // Blue and red collision.
     void 
-    collisionStepScBlue(SolutionState& state);
-    void 
     collisionStepScRed(SolutionState& state);
+    void 
+    collisionStepScBlue(SolutionState& state);
     // Swap streaming.
     void
     streamingSwap(SolutionState& state);

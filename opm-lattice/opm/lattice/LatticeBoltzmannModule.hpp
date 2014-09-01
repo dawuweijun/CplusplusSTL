@@ -1,7 +1,5 @@
 #ifndef MODULE_HEADER_INCLUDED
 #define MODULE_HEADER_INCLUDED
-#include <opm/lattice/GridManager.hpp>
-#include <opm/lattice/FluidProperties.hpp>
 #include <opm/lattice/utility/SimulatorState.hpp>
 
 #include <vector>
@@ -10,8 +8,6 @@
 class LatticeBoltzmannModule{
 public:
     LatticeBoltzmannModule();
-//    void
-//    initDistribution(const GridManager& grid, const FluidProperties& red, const FluidProperties& blud, SimulatorState& state) const;
     const int numDirection() const { return number_of_direction_; }
     std::string name() const { return name_; }
     std::vector<double>& xVelocity() { return xVelocity_; }

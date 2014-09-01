@@ -109,11 +109,12 @@ run(SimulatorTimer& timer, SimulatorState& state)
             outputStateMatlab(grid_, state, timer.currentStepNum(), output_dir_);
         }
         const double st = solver_timer.secsSinceStart();
-        std::cout << "Lattice Boltzmann Simulator took: " << st << " seconds." << std::endl;
+        std::cout << "\n     Lattice Boltzmann Simulator took: " << st << " seconds." << std::endl;
         stime += st;
         ++timer;
     }
     total_timer.stop();
-    std::cout << "Total time taken: " << total_timer.secsSinceStart()
-              << "\n"<<"Solver Time taken: " << stime;
+    std::cout << "\n   Performance Summary:\n";
+    std::cout << "\n     Total  Time taken: " << total_timer.secsSinceStart() << "s"
+              << "\n     Solver Time taken: " << stime << "s";
 }

@@ -9,7 +9,6 @@ GridManager::GridManager(const int NX, const int NY, const int NZ)
      ,NZ_(NZ)
      ,boundary_(NX*NY*NZ, 0)
 {
-    std::cout << "GridManager was successfully created!\n";
     std::vector<int> idx;
     //compute inner index.
 /*    for (int y  = 0; y < NY_; ++y) {
@@ -34,8 +33,6 @@ GridManager::GridManager(const int NX, const int NY, const int NZ)
     for (int i = 0; i < static_cast<int>(idx.size()); ++i) {
         boundary_[idx[i]] = 1;
     }
-    std::cout << "Debuging:\n";
-    std::cout << "boudndary_ size: " << boundary_.size() << std::endl;
 }
 
 int

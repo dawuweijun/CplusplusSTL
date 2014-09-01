@@ -19,7 +19,6 @@ void writeVtkData(const GridManager& grid,
         exit(1);
     }
     const int num_pts = grid.dimension();
-    std::cout << "num_pts: " << num_pts << std::endl;
     os.precision(12);
     os << "<?xml version=\"1.0\"?>\n";
     os << "<VTKFile type=\"ImageData\" version=\"0.1\" byte_order=\"LittleEndian\">\n";
@@ -29,11 +28,8 @@ void writeVtkData(const GridManager& grid,
     for (DataMap::const_iterator dit = data.begin(); dit != data.end(); ++dit) {
         const std::vector<double>& field = *(dit->second);
         const int num_comps = field.size() / num_pts;
-        std::cout << "name: " << dit->first << "  size: " << field.size()<<std::endl;
-        std::cout << "num_comps: " << num_comps<< std::endl;
         os << "       <DataArray type=\"Float32\" Name=\""<<dit->first<<"\" NumberOfComponents=\""<<boost::lexical_cast<std::string>(num_comps)<<"\" format=\"ascii\">\n"; 
         const int num_per_line =  num_comps == 1 ? 5 : num_comps;
-        std::cout << "num_per_line: " << num_per_line << std::endl;
         for (int i= 0; i < num_pts; ++i) {
             if (i % num_per_line == 0) {
                 os <<"      ";
