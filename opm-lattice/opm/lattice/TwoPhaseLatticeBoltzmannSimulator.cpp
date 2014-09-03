@@ -110,7 +110,7 @@ run(SimulatorTimer& timer, SimulatorState& state)
         solver_timer.start();
         solver_.step(timer.currentStepLength(), state);
         solver_timer.stop();
-        if (output_ ) {
+        if (output_ && timer.currentStepNum()%output_interval_ == 0) {
             updateState(state, grid_, red_, blue_, module_);
             if (output_vtk_) {
                 outputStateVtk(grid_, state, timer.currentStepNum()+1, output_dir_);

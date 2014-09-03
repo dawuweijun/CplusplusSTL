@@ -45,6 +45,7 @@ list (APPEND MAIN_SOURCE_FILES
 list (APPEND TEST_SOURCE_FILES
 	examples/test_grid.cpp
 	examples/test_module.cpp
+	examples/test_fluid.cpp
 	)
 
 # originally generated with the command:
@@ -56,7 +57,6 @@ list (APPEND TEST_DATA_FILES
 # find examples -name '*.c*' -printf '\t%p\n' | sort
 list (APPEND EXAMPLE_SOURCE_FILES
 	examples/sim_lbm.cpp
-	#examples/hello.cpp
 	)
 
 # programs listed here will not only be compiled, but also marked for
