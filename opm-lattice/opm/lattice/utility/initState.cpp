@@ -21,17 +21,30 @@ initState(SimulatorState& state,
     //create a tube.
     std::vector<int> innerIdx;
     std::vector<int> outerIdx;
-    const int x1 = grid.NX() / 4;
-    const int x2 = grid.NX()*3 / 4;
+    const int d = 50;
+    const int r = d / 2;
+//    const int x1 = grid.NX()*r / d;
+//    const int x2 = grid.NX()*(r+1) / d;
+    const int x1 = grid.NX()/4;
+    const int x2 = grid.NX()*3/4;
+    const int y1 = grid.NY()*r / d;
+    const int y2 = grid.NY()*(r+1) / d;
+    const int z1 = 0;
+    const int z2 = grid.NZ() / d;
     const int xmax = std::max(x1, x2);
     const int xmin = std::min(x1, x2);
+    const int ymax = std::max(y1, y2);
+    const int ymin = std::min(y1, y2);
+    const int zmax = std::max(z1, z2);
+//    const int zmin = std::min(z1, z2);
     for (int z = 0; z < grid.NZ(); ++z) {
         for (int y = 0; y < grid.NY(); ++y) {
             for (int x = 0; x < grid.NX(); ++x) {
-                if (x < xmin || x > xmax) {
-                    outerIdx.push_back(grid.index(x,y,z));
-                } else {
+//                if (x>= xmin && x <=xmax && y >= ymin && y<=ymax && z<=zmax) {
+                if (x >= xmin && x <= xmax) {
                     innerIdx.push_back(grid.index(x,y,z));
+                } else {
+                    outerIdx.push_back(grid.index(x,y,z));
                 }
             }
         }

@@ -39,7 +39,7 @@ private:
             const std::vector<double>& gff,
             const std::vector<double>& gfs);
     double
-    NipSc(const int flag, const double Rden, const double Bden, const double cxk, const double cyk, const double czk, const double wk, std::vector<double>& velocity);
+    NipSc(const int flag, const double Rden, const double Bden, const double cxk, const double cyk, const double czk, const double wk, std::vector<double> velocity);
     // Blue and red collision.
     void 
     collisionStepScRed(SolutionState& state);

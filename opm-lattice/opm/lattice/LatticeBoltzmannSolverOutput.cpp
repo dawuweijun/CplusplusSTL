@@ -14,9 +14,10 @@ outputStateVtk(const GridManager& grid,
                const int step,
                const std::string& output_dir)
 {
-    std::ostringstream vtkbluename, vtkredname;
+    std::ostringstream vtkbluename, vtkredname, vtkpname;
     vtkbluename << output_dir << "/vtk_files";
     vtkredname << output_dir << "/vtk_files";
+    vtkpname << output_dir << "/vtk_files";
     boost::filesystem::path fpath(vtkbluename.str());
     try {
         create_directories(fpath);
@@ -29,15 +30,19 @@ outputStateVtk(const GridManager& grid,
     std::ofstream vtkblue(vtkbluename.str().c_str());
     vtkredname << "/red-" << std::setw(6) << std::setfill('0') << step << ".vti";
     std::ofstream vtkred(vtkredname.str().c_str());
+    vtkpname << "/press-" << std::setw(6) << std::setfill('0') << step << ".vti";
+    std::ofstream vtkpress(vtkpname.str().c_str());
     if (!vtkblue && !vtkred) {
-        std::cout << "Failed to open " << vtkbluename.str() << vtkredname.str() << std::endl;
+        std::cout << "Failed to open " << vtkbluename.str() << vtkredname.str() << vtkpname.str()<<std::endl;
         exit(1);
     }
-    DataMap dm, ddm;
+    DataMap dm, ddm, dmp;
+    dmp["pressure"] = &state.pressure();
     dm["reddensity"] = &state.redDensity();
     ddm["bluedensity"] = &state.blueDensity();
     writeVtkData(grid, dm, vtkred);
     writeVtkData(grid, ddm, vtkblue);
+    writeVtkData(grid, dmp, vtkpress);
 }
 
 
@@ -51,6 +56,7 @@ outputStateMatlab(const GridManager& grid,
     dm["reddensity"] = &state.redDensity();
     dm["bluedensity"] = &state.blueDensity();
     dm["pressure"] = &state.pressure();
+    dm["planepressure"] = &state.planePressure();
     // Write data (not grid) in Matlab format
     for (DataMap::const_iterator it = dm.begin(); it != dm.end(); ++it) {
         std::ostringstream fname;
@@ -63,7 +69,8 @@ outputStateMatlab(const GridManager& grid,
             std::cout << "Creating directories failed: " << fpath << std::endl;
             exit(1);
         }
-        fname << "/" << std::setw(6) << std::setfill('0') << step << ".txt";
+//        fname << "/" << std::setw(6) << std::setfill('0') << step << ".txt";
+        fname << "/" << step << ".txt";
         std::ofstream file(fname.str().c_str());
         if (!file) {
             std::cout << "Failed to open " << fname.str() << std::endl;

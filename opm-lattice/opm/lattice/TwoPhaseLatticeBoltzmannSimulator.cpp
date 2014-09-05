@@ -97,6 +97,7 @@ run(SimulatorTimer& timer, SimulatorState& state)
         std::string filename = output_dir_ + "/step_timing.txt";
         tstep_os.open(filename.c_str(), std::fstream::out | std::fstream::app);
     }
+/*
     if (output_) {
         updateState(state, grid_, red_, blue_, module_);
         if (output_vtk_) {
@@ -104,6 +105,7 @@ run(SimulatorTimer& timer, SimulatorState& state)
         }
         outputStateMatlab(grid_, state, 0, output_dir_);
     }
+*/
     while (!timer.done()) {
         step_timer.start();
         timer.report(std::cout);
@@ -113,9 +115,9 @@ run(SimulatorTimer& timer, SimulatorState& state)
         if (output_ && timer.currentStepNum()%output_interval_ == 0) {
             updateState(state, grid_, red_, blue_, module_);
             if (output_vtk_) {
-                outputStateVtk(grid_, state, timer.currentStepNum()+1, output_dir_);
+                outputStateVtk(grid_, state, timer.currentStepNum(), output_dir_);
             }
-            outputStateMatlab(grid_, state, timer.currentStepNum()+1, output_dir_);
+            outputStateMatlab(grid_, state, timer.currentStepNum(), output_dir_);
         }
         const double st = solver_timer.secsSinceStart();
         std::cout << "\n     Lattice Boltzmann Simulator took: " << st << " seconds." << std::endl;

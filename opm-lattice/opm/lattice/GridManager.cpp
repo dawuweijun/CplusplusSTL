@@ -11,13 +11,13 @@ GridManager::GridManager(const int NX, const int NY, const int NZ)
 {
     std::vector<int> idx;
     //compute inner index.
-/*    for (int y  = 0; y < NY_; ++y) {
-        for (int x = 0; x < NX_; ++x) {
+    for (int z  = 0; z < NZ_; ++z) {
+        for (int y = 0; y < NY_; ++y) {
             idx.push_back(index(0, y, z));
             idx.push_back(index(NX_-1, y, z));
         }
     }
-*/
+
     for (int z = 0; z < NZ_; ++z) {
         for (int x = 0; x < NX_; ++x) {
             idx.push_back(index(x, 0, z));

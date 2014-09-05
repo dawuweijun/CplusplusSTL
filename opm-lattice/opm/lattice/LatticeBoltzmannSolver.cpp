@@ -35,11 +35,11 @@ LatticeBoltzmannSolver::step(const double dt, SimulatorState& x)
     const int size = grid_.dimension()*module_.numDirection();
     SolutionState state(size); 
     state = initVariables(x);
-//    massMomentumCalc(state, x);
     collisionStepScRed(state);
     collisionStepScBlue(state);
     streamingSwap(state);
     massMomentumCalc(state, x);
+    pressureCalc(state, x);
     updateState(state, x);
 }
 
@@ -75,13 +75,12 @@ void
 LatticeBoltzmannSolver::propagationBySwap(std::vector<double>& dis)
 {
     //swap locally
-    //
     const int NX = grid_.NX();
     const int NY = grid_.NY();
     const int NZ = grid_.NZ();
     const int N = grid_.dimension();
     const int ND = module_.numDirection();
-    assert(dis.size() == N * ND);
+    assert(dis.size() == N*ND);
     for (int i = 0; i < N; ++i) {
         for (int k = 0; k < ND-1; ) {
             std::swap(dis[i*ND + k], dis[i*ND + (k+1)]);
@@ -136,51 +135,22 @@ LatticeBoltzmannSolver::collisionStepScBlue(SolutionState& state)
     const std::vector<double>& w = module_.weight();
     const std::vector<double>& gff = blue_.gff();
     const std::vector<double>& gfs = blue_.gfs();
-/*    std::cout << "Blue gff & gfs: \n";
-    for (int i = 0; i < ND; ++i) {
-        std::cout << gff[i] << " ";
-    }
-    std::cout << "\n";
-    for (int i = 0; i < ND; ++i) {
-        std::cout << gfs[i] << " ";
-    }
-    std::cout << "\n";
- */   for (int i = 0; i < N; ++i) {
+    for (int i = 0; i < N; ++i) {
         if (solid[i] == 0) {
-            RedDensity = BlueDensity = 0.0;
+            RedDensity = 0.0;
             for (int k = 0; k < ND; ++k) {
                 RedDensity += state.red[i*ND + k];
-                BlueDensity += state.blue[i*ND + k];
             }
-//            std::cout << "RedDensity: " << RedDensity << "   total: " << RedDensity + BlueDensity << "\n";
             for (int k = 0; k < ND; ++k) {
                 f[i*ND + k] = RedDensity;
             }
-        } else if (solid[i] == 1) {
+        } else {
             for (int k = 0; k < ND; ++k) {
                 f[i*ND + k] = -10.0;
             }
         }
     }
-/*
-    std::cout << "before swap blue: \n";
-    for (int i = 0; i < N; ++i) {
-        for (int k = 0; k < ND; ++k) {
-            std::cout << f[i*ND+k] << " ";
-        }
-        std::cout << "\n";
-    }
-*/
     propagationBySwap(f);
-/*
-    std::cout << "after swap blue: \n";
-    for (int i = 0; i < N; ++i) {
-        for (int k = 0; k < ND; ++k) {
-            std::cout << f[i*ND+k] << " ";
-        }
-        std::cout << "\n";
-    }
-*/
     fcalcSc(f, gff, gfs);
     //
     //Bounce-back
@@ -199,7 +169,7 @@ LatticeBoltzmannSolver::collisionStepScBlue(SolutionState& state)
             for (int k = 0; k < ND-1; ++k) {
                 state.blue[i*ND + k] = BlueAfter[k];
             }
-        } else if (solid[i] == 0) {
+        } else {
             std::vector<double> velocity(grid_.spaceDim(), 0.0);
             RedDensity = BlueDensity=0;
             for (int k = 0; k < ND; ++k) {
@@ -214,10 +184,9 @@ LatticeBoltzmannSolver::collisionStepScBlue(SolutionState& state)
             for (int k = 0; k < 3; ++k) {
                 velocity[k] += -(1.0 / blue_.lambda()) * BlueDensity * f[i*ND + k];
             }
-            for (int k = 0; k < ND-1; ++k) {
+            for (int k = 0; k < ND; ++k) {
                 state.blue[i*ND + k] += blue_.lambda()*(state.blue[i*ND + k] - NipSc(0, RedDensity, BlueDensity, cx[k], cy[k], cz[k], w[k], velocity));
             }
-            state.blue[i*ND + ND-1] += blue_.lambda()*(state.blue[i*ND + ND-1] - NipSc(0, RedDensity, BlueDensity, cx[ND-1], cy[ND-1], cz[ND-1], w[ND-1], velocity));
         }
     }
 }
@@ -236,27 +205,16 @@ LatticeBoltzmannSolver::collisionStepScRed(SolutionState& state)
     const std::vector<double>& w = module_.weight();
     const std::vector<double>& gff = red_.gff();
     const std::vector<double>& gfs = red_.gfs();
-/*
-    std::cout << "Red gff & gfs: \n";
-    for (int i = 0; i < ND; ++i) {
-        std::cout << gff[i] << " ";
-    }
-    std::cout << "\n";
-    for (int i = 0; i < ND; ++i) {
-        std::cout << gfs[i] << " ";
-    }
-    std::cout << "\n";
-  */  for (int i = 0; i < N; ++i) {
+    for (int i = 0; i < N; ++i) {
         if (solid[i] == 0) {
-            RedDensity = BlueDensity = 0.0;
+            BlueDensity = 0.0;
             for (int k = 0; k < ND; ++k) {
-                RedDensity += state.red[i*ND + k];
                 BlueDensity += state.blue[i*ND + k];
             }
             for (int k = 0; k < ND; ++k) {
                 f[i*ND + k] = BlueDensity;
             }
-        } else if (solid[i] == 1) {
+        } else {
             for (int k = 0; k < ND; ++k) {
                 f[i*ND + k] = -10.0;
             }
@@ -281,7 +239,7 @@ LatticeBoltzmannSolver::collisionStepScRed(SolutionState& state)
             for (int k = 0; k < ND-1; ++k) {
                 state.red[i*ND + k] = RedAfter[k];
             }
-        } else if (solid[i] == 0) {
+        } else {
             std::vector<double> velocity(grid_.spaceDim());
             RedDensity = BlueDensity=0;
             for (int k = 0; k < ND; ++k) {
@@ -296,45 +254,29 @@ LatticeBoltzmannSolver::collisionStepScRed(SolutionState& state)
             for (int k = 0; k < 3; ++k) {
                 velocity[k] += -(1.0 / red_.lambda())*RedDensity*f[i*ND + k];
             }
-            double lambda = 0;
-            if ((RedDensity + BlueDensity) <= 0.0) {
-                lambda = 0.0;
-            } else {
-                lambda = (RedDensity*red_.lambda() + BlueDensity*blue_.lambda()) / (RedDensity + BlueDensity);
-            }
-            for (int k = 0; k < ND-1; ++k) {
+
+            for (int k = 0; k < ND; ++k) {
                 state.red[i*ND + k] += red_.lambda()*(state.red[i*ND + k] - NipSc(1, RedDensity, BlueDensity, cx[k], cy[k], cz[k], w[k], velocity));
             }
-            state.red[i*ND + ND-1] += red_.lambda()*(state.red[i*ND + ND-1] - NipSc(1, RedDensity, BlueDensity, cx[ND-1], cy[ND-1], cz[ND-1], w[ND-1], velocity));
         }
     }
 }
 
 double
-LatticeBoltzmannSolver::NipSc(const int flag, const double Rden, const double Bden, const double cxk, const double cyk, const double czk, const double wk, std::vector<double>& velocity)
+LatticeBoltzmannSolver::NipSc(const int flag, const double Rden, const double Bden, const double cxk, const double cyk, const double czk, const double wk, std::vector<double> velocity)
 {
-    double Nip = 0, rho = 0, uc = 0, u2 = 0;
-    rho = Rden + Bden;
-    std::vector<double> vel(3,0.0);
-    std::copy(velocity.begin(), velocity.end(), vel.begin());
-    if (rho <= 0.0) {
-        rho = 0;
-    } else {
+    double Nip = 0, uc = 0, u2 = 0;
+    if ((Rden+Bden) > 0.0) {
         for (int i = 0; i < 3; ++i) {
-            vel[i] /= rho;
+            velocity[i] /= Rden+Bden;
         }
     }
-    uc = vel[0] * cxk + vel[1] * cyk + vel[2] * czk;
+    uc = velocity[0]*cxk + velocity[1]*cyk + velocity[2]*czk;
     for (int i = 0; i < 3; ++i) {
-        u2 += std::pow(vel[i], 2);
+        u2 += std::pow(velocity[i], 2);
     }
-    if (flag == 0) {
-        Nip = Bden*wk*(1 + 3*uc + 4.5*uc*uc - 1.5*u2); 
-    }
-    if (flag == 1) {
-        Nip = Rden*wk*(1 + 3*uc + 4.5*uc*uc - 1.5*u2); 
-    }
-    return Nip;
+    Nip = wk*(1 + 3*uc + 4.5*uc*uc - 1.5*u2);
+    return flag==0?Bden*Nip:Rden*Nip;
 }
 
 void
@@ -352,13 +294,13 @@ LatticeBoltzmannSolver::fcalcSc(std::vector<double>& f,
         double fx = 0, fy = 0, fz = 0;
         for (int k = 0; k < ND; ++k) {
             if (f[i*ND + k] > 0.0) {
-                fx += gff[k] * cx[k] * f[i*ND + k];
-                fy += gff[k] * cy[k] * f[i*ND + k];
-                fz += gff[k] * cz[k] * f[i*ND + k];
+                fx += gff[k]*cx[k]*f[i*ND + k];
+                fy += gff[k]*cy[k]*f[i*ND + k];
+                fz += gff[k]*cz[k]*f[i*ND + k];
             } else if (f[i*ND + k] < -9.9) {
-                fx += gfs[k] * cx[k];
-                fy += gfs[k] * cy[k];
-                fz += gfs[k] * cz[k];
+                fx += gfs[k]*cx[k];
+                fy += gfs[k]*cy[k];
+                fz += gfs[k]*cz[k];
             }
         }
         f[i*ND + 0] = -fx;
@@ -373,21 +315,17 @@ LatticeBoltzmannSolver::streamingSwap(SolutionState& state)
     propagationBySwap(state.blue);
     
 }
+
 void
 LatticeBoltzmannSolver::massMomentumCalc(const SolutionState& state, SimulatorState& x)
 {
     const int N = grid_.dimension();
     const int ND = module_.numDirection();
     std::vector<double> mass(2, 0.0);
+    std::vector<double> press(N, 0.0);
     double maxabsvelocity = -10.0;
-//    mass[0] = std::accumulate(state.red.begin(), state.red.end(), 0.0);
-//    mass[1] = std::accumulate(state.blue.begin(), state.blue.end(), 0.0);
-    for (int i = 0; i < N; ++i) {
-        for (int k = 0; k < ND; ++k) {
-            mass[0] += state.red[i*ND+k];
-            mass[1] += state.blue[i*ND+k];
-        }
-    }
+    mass[0] = std::accumulate(state.red.begin(), state.red.end(), 0.0);
+    mass[1] = std::accumulate(state.blue.begin(), state.blue.end(), 0.0);
     const std::vector<int>& boundary = grid_.boundary();
     const std::vector<double>& cx = module_.xVelocity();
     const std::vector<double>& cy = module_.yVelocity();
@@ -398,18 +336,22 @@ LatticeBoltzmannSolver::massMomentumCalc(const SolutionState& state, SimulatorSt
         if (boundary[i] == 0) {
             for (int k = 0; k < ND; ++k) {
                 tmp += state.red[i*ND + k] + state.blue[i*ND + k];
-                velocity[0] += (state.red[i*ND + k] + state.blue[i*ND + k]) * cx[k];    
-                velocity[1] += (state.red[i*ND + k] + state.blue[i*ND + k]) * cy[k];    
-                velocity[2] += (state.red[i*ND + k] + state.blue[i*ND + k]) * cz[k];    
+                velocity[0] += (state.red[i*ND + k] + state.blue[i*ND + k])*cx[k];    
+                velocity[1] += (state.red[i*ND + k] + state.blue[i*ND + k])*cy[k];    
+                velocity[2] += (state.red[i*ND + k] + state.blue[i*ND + k])*cz[k];    
             }
             for (int k = 0; k < 3; ++k) {
                 velocity[k] /= tmp; 
             }
-            if (std::sqrt(velocity[0]*velocity[0] + velocity[1]*velocity[1] + velocity[2]*velocity[2]) > maxabsvelocity) {
-                maxabsvelocity = std::sqrt(velocity[0]*velocity[0] + velocity[1]*velocity[1] + velocity[2]*velocity[2]);
+            double velsquare = velocity[0]*velocity[0] + velocity[1]*velocity[1] + velocity[2]*velocity[2];
+            press[i] = tmp / 3.0*(1.0 - velsquare);
+            if (std::sqrt(velsquare) > maxabsvelocity) {
+                maxabsvelocity = std::sqrt(velsquare);
             }
         }
     }
+    assert(press.size() == x.pressure().size());
+    std::copy(press.begin(), press.end(), x.pressure().begin());
     std::cout << "\n   Mass Momentum Summary:\n";
     std::cout << std::setw(18) << std::setprecision(9) << "     Total Mass   : " << mass[0] + mass[1] << std::endl;
     std::cout << std::setw(18) << std::setprecision(9) << "     Red   Mass   : " << mass[0] << std::endl;
@@ -417,5 +359,31 @@ LatticeBoltzmannSolver::massMomentumCalc(const SolutionState& state, SimulatorSt
     std::cout << std::setw(18) << std::setprecision(9) << "     FluxForce    : " << fluxForce_ << std::endl;
     std::cout << std::setw(18) << std::setprecision(9) << "     ExternalForce: " << externalForce_ << std::endl;
     std::cout << std::setw(18) << std::setprecision(9) << "     Max abs vel  : " << maxabsvelocity << std::endl;
-   
+}
+
+void
+LatticeBoltzmannSolver::pressureCalc(const SolutionState& state, SimulatorState& x)
+{
+    //get plane pressure
+    std::vector<double> planepress;
+    typedef std::vector<double>::size_type vec_sz;
+    for (int xx = 0; xx < grid_.NX(); ++xx) {
+        std::vector<int> idx;
+        planepress.push_back(xx);
+        double p = 0, c = 0;
+        for (int y = 0; y < grid_.NY(); ++y) {
+            for (int z = 0; z < grid_.NZ(); ++z) {
+                idx.push_back(grid_.index(xx, y, z));
+            }
+        }
+        for (vec_sz i = 0; i < idx.size(); ++i) {
+            if (state.red[idx[i]] != 0 && grid_.boundary()[idx[i]] != 1) {
+                p += x.pressure()[idx[i]];
+                c++;
+            }
+        }
+        planepress.push_back(c>0?p/c:p);
+    }
+    x.planePressure().resize(planepress.size());
+    std::copy(planepress.begin(), planepress.end(), x.planePressure().begin());
 }
